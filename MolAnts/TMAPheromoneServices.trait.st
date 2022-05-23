@@ -1,19 +1,18 @@
 Trait {
-	#name : #TMAAntServices,
-	#instVars : [
-		'stage'
-	],
+	#name : #TMAPheromoneServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
 	#category : #'MolAnts-Molecule Contracts'
 }
 
 { #category : #services }
-TMAAntServices >> getRoleName [
+TMAPheromoneServices >> getMaxIntensity [
 ]
 
 { #category : #services }
-TMAAntServices >> getStage [
+TMAPheromoneServices >> getPheromonesDict [
+]
 
-	^ self getTMAStageServicesProvider 
+{ #category : #services }
+TMAPheromoneServices >> getPheromonesReturnDict [
 ]

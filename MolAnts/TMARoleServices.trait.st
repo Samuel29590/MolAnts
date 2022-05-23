@@ -17,5 +17,5 @@ TMARoleServices >> getRoleName [
 ]
 
 { #category : #role }
-TMARoleServices >> moveFrom: aPosition [
+TMARoleServices >> moveFrom: anAnt [
 ]

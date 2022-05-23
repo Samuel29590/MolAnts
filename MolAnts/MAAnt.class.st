@@ -1,8 +1,8 @@
 Class {
 	#name : #MAAnt,
 	#superclass : #Object,
-	#traits : 'MolComponentImpl + TMAAntsType + TMASimulationServices + TMASimulationEvents + TMAAntServices',
-	#classTraits : 'MolComponentImpl classTrait + TMAAntsType classTrait + TMASimulationServices classTrait + TMASimulationEvents classTrait + TMAAntServices classTrait',
+	#traits : 'MolComponentImpl + TMAAntsType + TMASimulationEvents + TMAAntServices',
+	#classTraits : 'MolComponentImpl classTrait + TMAAntsType classTrait + TMASimulationEvents classTrait + TMAAntServices classTrait',
 	#instVars : [
 		'position',
 		'ageInMs'
@@ -56,19 +56,32 @@ MAAnt >> doSimulationStep [
 	self getStage isAlive ifTrue: [ 
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
 		self getStage doSimulationStepFor: self.
-		self position: (self getStage moveFrom: self position).  
+		self position: (self getStage moveFrom: self).  
 	].
 ]
 
 { #category : #services }
 MAAnt >> getInsects [
 
-	^ self getTMASimulationServicesProvider InsectsPos. 
+	^ self getTMASimulationServicesProvider insectsPos. 
 ]
 
-{ #category : #'component accessing' }
-MAAnt >> getTMAPositionEventsNotifier [
-	^self eventsNotifiers at: TMAPositionEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: TMAPositionEvents name: nil].
+{ #category : #services }
+MAAnt >> getPheromoneOwnersDict [
+
+	^ self getTMASimulationServicesProvider getPheromoneOwnersDict.
+]
+
+{ #category : #services }
+MAAnt >> getPheromonesDict [
+
+	^ self getTMASimulationServicesProvider getPheromonesDict.
+]
+
+{ #category : #accessing }
+MAAnt >> getRoleName [
+
+	^ self getTMAStageServicesProvider getRoleName.
 ]
 
 { #category : #'component accessing' }
@@ -124,9 +137,6 @@ MAAnt >> position: aPoint [
 
 	position ~= aPoint ifFalse:[^self]. 
 	position := aPoint.
-	self getTMAPositionEventsNotifier positionChanged: position for: self.
-	
-	
 ]
 
 { #category : #stage }

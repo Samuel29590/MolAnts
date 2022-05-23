@@ -20,7 +20,7 @@ MAQueen >> doSimulationStepFor: anAnt [
 ]
 
 { #category : #role }
-MAQueen >> moveFrom: aPosition [
+MAQueen >> moveFrom: anAnt [
 
-		^ aPosition.
+		^ anAnt position.
 ]

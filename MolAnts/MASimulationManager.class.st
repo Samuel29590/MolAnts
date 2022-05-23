@@ -8,11 +8,33 @@ Class {
 		'ground',
 		'isAntHillCreated',
 		'isInsectsCreated',
+		'ants',
 		'nbAnt',
-		'InsectsPos'
+		'insectsPos',
+		'pheromones'
 	],
 	#category : #'MolAnts-Core'
 }
+
+{ #category : #'accessing - events' }
+MASimulationManager class >> consumedComponentEvents [
+	<componentContract>
+	^ {TMAStageEvents . TMARoleEvents . TMAPositionEvents}
+]
+
+{ #category : #scripts }
+MASimulationManager class >> pauseSimulation [
+	<script>
+	
+	self passivate.
+]
+
+{ #category : #scripts }
+MASimulationManager class >> playSimulation [
+	<script>
+	
+	self activate.
+]
 
 { #category : #properties }
 MASimulationManager class >> simulationAntHillPosition [
@@ -54,29 +76,24 @@ MASimulationManager class >> stopSimulation [
 	
 ]
 
-{ #category : #services }
-MASimulationManager >> InsectsPos [
-
-	^ InsectsPos.
-]
-
 { #category : #events }
 MASimulationManager >> ant: anAnt eatAt: aPoint [
 
 	| insect |
 	
 	"remove the insect in the dictionary."
-	(InsectsPos includesKey: aPoint) ifTrue: [
-		insect := (InsectsPos at: aPoint) removeFirst.
-		(InsectsPos at: aPoint) isEmpty ifTrue:[
-			InsectsPos removeKey: aPoint.
+	(insectsPos includesKey: aPoint) ifTrue: [
+		insect := (insectsPos at: aPoint) removeFirst.
+		(insectsPos at: aPoint) isEmpty ifTrue:[
+			insectsPos removeKey: aPoint.
 		].
 	].
+]
 
-	"remove the insect from the ground."
-	self getTMASimulationEventsNotifier insectDead: insect.
-	
-	"Tell the insect that he is dead."
+{ #category : #accessing }
+MASimulationManager >> ants [
+
+	^ ants.
 ]
 
 { #category : #'component life cycle' }
@@ -87,7 +104,6 @@ MASimulationManager >> componentActivate [
 	self getTMARoleEventsSubscriber subscribe: self.
 	self getTMAPositionEventsSubscriber subscribe: self.
 	
-	ground := MAGround start: 'Ground'. 
 	self start.
 ]
 
@@ -100,8 +116,14 @@ MASimulationManager >> componentInitialize [
 	ground := nil.
 	isAntHillCreated := false.
 	isInsectsCreated := false.
+	ants := OrderedCollection new.
 	nbAnt := 0.
-	InsectsPos := Dictionary new.
+	insectsPos := Dictionary new.
+	
+	pheromones := MAPheromones start: 'Pheromones'.
+	
+	ground := MAGround start: 'Ground'.
+	ground forServices: TMAPheromoneServices useProvider: (pheromones componentName asSymbol) asSymbol.
 ]
 
 { #category : #'component life cycle' }
@@ -140,8 +162,7 @@ MASimulationManager >> createAnt [
 		self forEvents: TMARoleEvents addProducer: (ant getStage getRole componentName). 
 		self forEvents: TMAPositionEvents addProducer: name.
 		
-		"Notify Ant creation"
-		self getTMASimulationEventsNotifier antBorn: ant.
+		ants add: ant.
 	].
 
 	
@@ -167,8 +188,8 @@ MASimulationManager >> createInsects [
 
 	self isInsectsCreated: true.
 
-	"Create 100 insects"
-	1 to: 100 do:[ :e | | insect name newPos |
+	"Create 50 insects"
+	1 to: 50 do:[ :e | | insect name newPos |
 		"Create Ant"
 		name := ('Insect', e printString) asSymbol.
 		insect := MAInsect start: name.
@@ -179,19 +200,34 @@ MASimulationManager >> createInsects [
 		"Adding events producer into SimulationMManager"
 		self forEvents: TMAPositionEvents addProducer: name.
 		
-		"Notify Ant creation"
-		self getTMASimulationEventsNotifier insectBorn: insect.
-		
 		"Add the insect to the dictionary of their positions."
-		(InsectsPos includesKey: newPos) ifFalse:[ | collection |
+		(insectsPos includesKey: newPos) ifFalse:[ | collection |
 			collection := (OrderedCollection new).
 			collection add:insect.
-			InsectsPos add: (newPos -> collection ).
+			insectsPos add: (newPos -> collection ).
 		] ifTrue: [
-			(InsectsPos at: newPos) addLast: insect.
+			(insectsPos at: newPos) addLast: insect.
 		].
 	].
 	
+]
+
+{ #category : #services }
+MASimulationManager >> getPheromoneOwnersDict [
+
+	^ pheromones getPheromoneOwnersDict.
+]
+
+{ #category : #services }
+MASimulationManager >> getPheromonesDict [
+
+	^ pheromones getPheromonesDict.
+]
+
+{ #category : #services }
+MASimulationManager >> getPheromonesReturnDict [
+
+	^ pheromones getPheromonesReturnDict.
 ]
 
 { #category : #'component accessing' }
@@ -233,6 +269,12 @@ MASimulationManager >> getTMAStageEventsSubscriber [
 			[eventsSubscriber := MolComponentManager default locatorServices 
 						searchEventsSubscriberFor: TMAStageEvents named: eventsSymbol ]. 
 	^eventsSubscriber
+]
+
+{ #category : #services }
+MASimulationManager >> insectsPos [
+
+	^ insectsPos.
 ]
 
 { #category : #accessing }
@@ -278,7 +320,7 @@ MASimulationManager >> pauseSimulationLoop [
 { #category : #events }
 MASimulationManager >> positionChanged: aPoint for: aModelObject [
 
-	self getTMASimulationEventsNotifier positionChanged: aPoint for: aModelObject.
+	"self getTMASimulationEventsNotifier positionChanged: aPoint for: aModelObject."
 ]
 
 { #category : #events }
@@ -287,23 +329,21 @@ MASimulationManager >> positionChangedFor: aModelObject oldPos: aPoint newPos: a
 	"Add the insect position in the dictionary."
 	
 	"remove the old position."
-	(InsectsPos includesKey: aPoint) ifTrue: [
-		(InsectsPos at: aPoint) remove: aModelObject ifAbsent: [].
-		(InsectsPos at: aPoint) isEmpty ifTrue:[
-			InsectsPos removeKey: aPoint.
+	(insectsPos includesKey: aPoint) ifTrue: [
+		(insectsPos at: aPoint) remove: aModelObject ifAbsent: [].
+		(insectsPos at: aPoint) isEmpty ifTrue:[
+			insectsPos removeKey: aPoint.
 		].
 	].
 	
 	"Add to the new position."
-	(InsectsPos includesKey: anotherPoint) ifFalse:[ | collection |
+	(insectsPos includesKey: anotherPoint) ifFalse:[ | collection |
 		collection := (OrderedCollection new).
 		collection add: aModelObject.
-		InsectsPos add: (anotherPoint -> collection ).
+		insectsPos add: (anotherPoint -> collection ).
 	] ifTrue: [
-		(InsectsPos at: anotherPoint) addLast: aModelObject.
+		(insectsPos at: anotherPoint) addLast: aModelObject.
 	].
-	
-	self getTMASimulationEventsNotifier positionChanged: anotherPoint for: aModelObject.
 ]
 
 { #category : #events }
@@ -316,12 +356,10 @@ MASimulationManager >> queenLaid [
 MASimulationManager >> removeAntHill [
 
 	"Delete nbAnt ants"
-	1 to: nbAnt do:[ :e | | name |
-		"Delete Ant"
-		name := ('Ant', e printString) asSymbol.
-		MAAnt stop: name.
+	ants do:[ :e | 
+		MAAnt stop: (e componentName).
 	].
-
+	ants := nil.
 	nbAnt := 0.
 	self isAntHillCreated: false.
 ]
@@ -329,15 +367,23 @@ MASimulationManager >> removeAntHill [
 { #category : #private }
 MASimulationManager >> removeInsects [
 
-	"Delete 100 insects"
-	1 to: 100 do:[ :e | | name |
-		"Delete insect"
-		name := ('Insect', e printString) asSymbol.
-		MAInsect stop: name.
+	"Delete insects"
+	insectsPos do: [ :each | | name |
+		each do: [ :insect |
+			"Delete insect"
+			name := insect componentName.
+			MAInsect stop: name.
+		].
 	].
-	
+	insectsPos := nil.
 	self isInsectsCreated: false.
-	InsectsPos := nil
+]
+
+{ #category : #private }
+MASimulationManager >> removePheromones [
+
+	pheromones := nil.
+	MAPheromones stop: 'Pheromones'.
 ]
 
 { #category : #events }
@@ -349,65 +395,90 @@ MASimulationManager >> roleChanged: aSymbol for: aModelObject [
 
 { #category : #events }
 MASimulationManager >> stageNameChanged: aSymbol for: aModelObject [
-	
-	aSymbol = #dead ifFalse:[
-		self getTMASimulationEventsNotifier ant: aModelObject changeStage: aSymbol.
-		^self.
-	].
-	self getTMASimulationEventsNotifier antDead: aModelObject.
+
+	aSymbol = #dead ifTrue: [ ants remove: aModelObject ]
 ]
 
 { #category : #services }
 MASimulationManager >> start [
 
-	self isRunning ifTrue:[^self].
-	self isAntHillCreated ifFalse:[self createAntHill].
-	
+	self isRunning ifTrue: [ ^ self ].
+	self isAntHillCreated ifFalse: [ self createAntHill ].
+
 	self createInsects.
 
 	self startSimulationLoop.
 	isRunning := true.
-	self getTMASimulationEventsNotifier started.
+	self getTMASimulationEventsNotifier started
 ]
 
 { #category : #private }
 MASimulationManager >> startSimulationLoop [
 
-	simulationThread ifNil:[
-		simulationThread := [
-			[true] whileTrue: [ 
-				self getTMASimulationEventsNotifier simulationStepSent.
-				(Delay forMilliseconds: self class simulationStepDurationInMs) wait. 	
-			].
-		] newProcess priority: Processor userBackgroundPriority.
+	simulationThread ifNil: [ 
+		simulationThread := [ 
+		                    [ true ] whileTrue: [ 
+			                    self getTMASimulationEventsNotifier
+				                    simulationStepSent.
+			                    (Delay forMilliseconds:
+				                     self class simulationStepDurationInMs) wait ] ]
+			                    newProcess priority:
+			                    Processor userBackgroundPriority.
 
-		simulationThread name: 'Molecule SimulationManager Process'.
-	].
-	
-	simulationThread resume.
+		simulationThread name: 'Molecule SimulationManager Process' ].
+
+	simulationThread resume
 ]
 
 { #category : #services }
 MASimulationManager >> stop [
 
 	self stopSimulationLoop.
-	
+
 	MAGround stop: 'Ground'.
 	ground := nil.
-	
-	self isAntHillCreated ifTrue:[	self removeAntHill ].
-	self isInsectsCreated ifTrue:[	self removeInsects ].
-		
+
+	self isAntHillCreated ifTrue: [ self removeAntHill ].
+	self isInsectsCreated ifTrue: [ self removeInsects ].
+	self removePheromones.
+
 	isRunning := false.
-	
-	self getTMASimulationEventsNotifier stopped.
+
+	self getTMASimulationEventsNotifier stopped
 ]
 
 { #category : #private }
 MASimulationManager >> stopSimulationLoop [
 
-	simulationThread ifNil:[^self].
+	simulationThread ifNil: [ ^ self ].
 	simulationThread terminate.
-	simulationThread := nil.	
+	simulationThread := nil
+]
+
+{ #category : #events }
+MASimulationManager >> worker: anAnt eatAt: aPoint [
+
+	| insect |
+	"remove the insect in the dictionary."
+	(insectsPos includesKey: aPoint) ifTrue: [ 
+		insect := (insectsPos at: aPoint) removeFirst.
+		(insectsPos at: aPoint) isEmpty ifTrue: [ 
+			insectsPos removeKey: aPoint ] ].
+
+	"Tell the insect that he is dead."
+	MAInsect stop: insect componentName
+]
+
+{ #category : #events }
+MASimulationManager >> workerExploringPositionChanged: aPoint for: anAnt [
+
+	self getTMASimulationEventsNotifier pheromoneNew: aPoint for: anAnt.
+	"self getTMASimulationEventsNotifier positionChanged: aPoint for: anAnt."
+]
+
+{ #category : #events }
+MASimulationManager >> workerReturningPositionChanged: aPoint for: anAnt [
 	
+	self getTMASimulationEventsNotifier pheromoneReturnNew: aPoint for: anAnt.
+	"self getTMASimulationEventsNotifier positionChanged: aPoint for: anAnt."
 ]

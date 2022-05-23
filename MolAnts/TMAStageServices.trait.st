@@ -30,5 +30,5 @@ TMAStageServices >> isAlive [
 ]
 
 { #category : #role }
-TMAStageServices >> moveFrom: aPosition [
+TMAStageServices >> moveFrom: anAnt [
 ]

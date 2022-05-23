@@ -11,12 +11,6 @@ TMAAntsType classSide >> consumedComponentEvents [
 	^ {TMASimulationEvents }
 ]
 
-{ #category : #'accessing - events' }
-TMAAntsType classSide >> producedComponentEvents [
-	<componentContract>
-	^ {TMAPositionEvents } 
-]
-
 { #category : #'accessing - services' }
 TMAAntsType classSide >> providedComponentServices [
 	<componentContract>

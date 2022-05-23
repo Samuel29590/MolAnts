@@ -8,13 +8,13 @@ Trait {
 { #category : #'accessing - events' }
 TMAStageType classSide >> producedComponentEvents [
 	<componentContract>
-	^ { TMAStageEvents} 
+	^ {TMAStageEvents} 
 ]
 
 { #category : #'accessing - services' }
 TMAStageType classSide >> providedComponentServices [
 	<componentContract>
-	^ {TMAStageServices } 
+	^ {TMAStageServices} 
 ]
 
 { #category : #'accessing - services' }

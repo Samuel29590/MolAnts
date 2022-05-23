@@ -9,7 +9,15 @@ Trait {
 }
 
 { #category : #services }
-TMASimulationServices >> InsectsPos [
+TMASimulationServices >> getPheromonesDict [
+]
+
+{ #category : #services }
+TMASimulationServices >> getPheromonesReturnDict [
+]
+
+{ #category : #services }
+TMASimulationServices >> insectsPos [
 ]
 
 { #category : #services }

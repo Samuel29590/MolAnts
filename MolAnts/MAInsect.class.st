@@ -56,7 +56,7 @@ MAInsect >> getTMASimulationEventsSubscriber [
 	^eventsSubscriber
 ]
 
-{ #category : #'events - lifecycle' }
+{ #category : #accessing }
 MAInsect >> insectDead: anInsect [
 
 	self = anInsect ifTrue: [
@@ -74,27 +74,21 @@ MAInsect >> position [
 MAInsect >> position: aPoint [
 
 	| oldPos |
-	
-	position ~= aPoint ifFalse:[^self]. 
+	position ~= aPoint ifFalse: [ ^ self ].
 	oldPos := position.
 	position := aPoint.
-	
-	(position x < 0) ifTrue: [
-		position := 0@(position y)
-	].
-	(position y < 0) ifTrue: [
-		position := (position x)@0
-	].
-	(position x > MASimulationManager simulationWidth) ifTrue: [
-		position := (MASimulationManager simulationHeight)@(position y)
-	].
-	(position y > MASimulationManager simulationHeight ) ifTrue: [ 
-		position := (position x)@(MASimulationManager simulationWidth)
-	].
-	
-	self getTMAPositionEventsNotifier positionChangedFor: self oldPos: oldPos newPos: position.
-	
-	
+
+	position x < 0 ifTrue: [ position := 0 @ position y ].
+	position y < 0 ifTrue: [ position := position x @ 0 ].
+	position x >= MASimulationManager simulationWidth ifTrue: [ 
+		position := MASimulationManager simulationHeight @ position y ].
+	position y >= MASimulationManager simulationHeight ifTrue: [ 
+		position := position x @ MASimulationManager simulationWidth ].
+
+	self getTMAPositionEventsNotifier
+		positionChangedFor: self
+		oldPos: oldPos
+		newPos: position
 ]
 
 { #category : #'life cycle' }

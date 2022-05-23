@@ -18,9 +18,5 @@ MARole >> getTMARoleEventsNotifier [
 ]
 
 { #category : #role }
-MARole >> moveFrom: aPosition [
-
-	roleName = #queen ifTrue: [ 
-		^ aPosition + (((Random new next * 10 - 5) rounded) @ 0)
-	].
+MARole >> moveFrom: anAnt [
 ]

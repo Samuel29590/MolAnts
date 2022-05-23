@@ -68,6 +68,12 @@ MAStage >> getRole [
 	^ role.
 ]
 
+{ #category : #role }
+MAStage >> getRoleName [
+
+	^ role getRoleName.
+]
+
 { #category : #'component accessing' }
 MAStage >> getTMARoleServicesProvider [
 	| servicesSymbol servicesProvider itf |
@@ -100,7 +106,7 @@ MAStage >> initializeRole [
 		role := MAQueen start: (#role, self componentName asSymbol) asSymbol.
 		^ self.
 	].
-	x<50 ifTrue: [ 
+	x<26 ifTrue: [ 
 		role := MAFighter start: (#role, self componentName asSymbol) asSymbol.
 		^ self.
 	].
@@ -116,10 +122,10 @@ MAStage >> isAlive [
 ]
 
 { #category : #role }
-MAStage >> moveFrom: aPosition [
+MAStage >> moveFrom: anAnt [
 
-	self getStageName ~= #adult ifTrue:[^aPosition].
-	^ (self getRole moveFrom: aPosition).
+	self getStageName ~= #adult ifTrue:[^anAnt position].
+	^ (self getRole moveFrom: anAnt).
 
 ]
 
