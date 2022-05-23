@@ -84,6 +84,12 @@ MAAnt >> getRoleName [
 	^ self getTMAStageServicesProvider getRoleName.
 ]
 
+{ #category : #accessing }
+MAAnt >> getStageName [
+
+	^ self getTMAStageServicesProvider getStageName.
+]
+
 { #category : #'component accessing' }
 MAAnt >> getTMASimulationEventsSubscriber [
 	| eventsSymbol eventsSubscriber itf |

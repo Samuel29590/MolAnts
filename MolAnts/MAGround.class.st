@@ -5,7 +5,13 @@ Class {
 	#classTraits : 'MolComponentImpl classTrait + TMAGroundType classTrait + TMASimulationEvents classTrait',
 	#instVars : [
 		'mySpace',
-		'compt'
+		'compt',
+		'nbInsects',
+		'nbPheromones',
+		'nbEggs',
+		'nbAnts',
+		'time',
+		'refreshing'
 	],
 	#category : #'MolAnts-View'
 }
@@ -51,10 +57,14 @@ MAGround >> componentActivate [
 
 { #category : #'life cycle' }
 MAGround >> componentInitialize [
-	
-	mySpace := self openInNewSpace extent: (MASimulationManager simulationWidth + 5)@(MASimulationManager simulationHeight + 5 + 100).
-	
+
 	compt := 0.
+	refreshing := 5.
+	mySpace := self openInNewSpace extent:
+		           MASimulationManager simulationWidth
+		           @ (MASimulationManager simulationHeight + 200).
+
+	self createInfoPanel
 ]
 
 { #category : #'life cycle' }
@@ -73,6 +83,195 @@ MAGround >> componentRemove [
 	].
 ]
 
+{ #category : #initialization }
+MAGround >> createInfoPanel [
+
+	| infoPanel button |
+	infoPanel := BlElement new.
+	infoPanel background: Color lightGray.
+	infoPanel relocate: 0 @ MASimulationManager simulationHeight.
+	infoPanel size: MASimulationManager simulationWidth @ 200.
+	infoPanel constraintsDo: [ :c | 
+		c maxHeight: 200.
+		c horizontal matchParent ].
+	mySpace addChild: infoPanel.
+
+
+	"Adding Pause button"
+	button := BlElement new.
+	button background: Color orange.
+	button size: 100 @ 25.
+	button relocate: 50 @ 10.
+	button addChild:
+		((BlTextElement new relocate: 30 @ 5) text: 'Pause' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ 
+					 self isRunning ifTrue: [ MASimulationManager pauseSimulation ] ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+
+	"Adding Play button"
+	button := BlElement new.
+	button background: Color green.
+	button size: 100 @ 25.
+	button relocate: 200 @ 10.
+	button addChild:
+		((BlTextElement new relocate: 35 @ 5) text: 'Play' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ 
+					 self isRunning ifFalse: [ MASimulationManager playSimulation ] ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+
+	"Adding Stop button"
+	button := BlElement new.
+	button background: Color red.
+	button size: 100 @ 25.
+	button relocate: 350 @ 10.
+	button addChild:
+		((BlTextElement new relocate: 35 @ 5) text: 'Stop' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ MASimulationManager stopSimulation ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+	
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 50 @ 50;
+			  background: Color transparent) text: 'Refreshing every :' asRopedText).
+			
+	button := BlElement new.
+	button background: Color gray.
+	button size: 25 @ 20.
+	button relocate: 200 @ 50.
+	button addChild:
+		((BlTextElement new relocate: 10 @ 5) text: '1' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ self setRefreshingTo: 1 ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+	
+	"Adding Pause button"
+	button := BlElement new.
+	button background: Color gray.
+	button size: 25 @ 20.
+	button relocate: 230 @ 50.
+	button addChild:
+		((BlTextElement new relocate: 10 @ 5) text: '2' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ self setRefreshingTo: 2 ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+	
+	"Adding Pause button"
+	button := BlElement new.
+	button background: Color gray.
+	button size: 25 @ 20.
+	button relocate: 260 @ 50.
+	button addChild:
+		((BlTextElement new relocate: 10 @ 5) text: '5' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ self setRefreshingTo: 5 ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+	
+	"Adding Pause button"
+	button := BlElement new.
+	button background: Color gray.
+	button size: 35 @ 20.
+	button relocate: 290 @ 50.
+	button addChild:
+		((BlTextElement new relocate: 10 @ 5) text: '10' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ self setRefreshingTo: 10 ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+	
+	"Adding Pause button"
+	button := BlElement new.
+	button background: Color gray.
+	button size: 35 @ 20.
+	button relocate: 330 @ 50.
+	button addChild:
+		((BlTextElement new relocate: 10 @ 5) text: '20' asRopedText).
+	button addEventHandler: (BlEventHandler
+			 on: BlClickEvent
+			 do: [ :anEvent | 
+				 button isVisible ifTrue: [ self setRefreshingTo: 20 ].
+				 anEvent consumed: true ]).
+	infoPanel addChild: button.
+
+
+	"Ajout de l'heure à l'interface."
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 50 @ 80;
+			  background: Color transparent) text: 'Time :' asRopedText).
+	time := BlTextElement new
+		        relocate: 50 @ 100;
+		        background: Color transparent;
+		        text: '000' asRopedText.
+	infoPanel addChild: time.
+
+	"Ajout du nombre de proies à l'interface."
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 50 @ 130;
+			  background: Color transparent) text:
+			 'Number of insects :' asRopedText).
+	nbInsects := BlTextElement new
+		             relocate: 50 @ 150;
+		             background: Color transparent;
+		             text: '000' asRopedText.
+	infoPanel addChild: nbInsects.
+
+	"Ajout du nombre de pheromones à l'interface."
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 250 @ 130;
+			  background: Color transparent) text:
+			 'Nunber of pheromones :' asRopedText).
+	nbPheromones := BlTextElement new
+		                relocate: 250 @ 150;
+		                background: Color transparent;
+		                text: '000' asRopedText.
+	infoPanel addChild: nbPheromones.
+
+	"Ajout du nombre de fourmis à l'interface."
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 250 @ 80;
+			  background: Color transparent) text:
+			 'Number of ants :' asRopedText).
+
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 250 @ 100;
+			  background: Color transparent) text: 'Eggs : ' asRopedText).
+	nbEggs := BlTextElement new
+		          relocate: 305 @ 100;
+		          background: Color transparent;
+		          text: '000' asRopedText.
+	infoPanel addChild: nbEggs.
+
+	infoPanel addChild: ((BlTextElement new
+			  relocate: 350 @ 100;
+			  background: Color transparent) text: 'Adults : ' asRopedText).
+	nbAnts := BlTextElement new
+		          relocate: 415 @ 100;
+		          background: Color transparent;
+		          text: '000' asRopedText.
+	infoPanel addChild: nbAnts
+]
+
 { #category : #drawing }
 MAGround >> drawMeAndChildrenOnSpartaCanvas: aCanvas [
 
@@ -86,9 +285,7 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 	super drawOnSpartaCanvas: aCanvas.
 
 	aCanvas figure
-		path: (aCanvas shape
-				 circleAt: MASimulationManager simulationAntHillPosition
-				 radius: 20);
+		path: (Rectangle origin: (MASimulationManager simulationAntHillPosition - (20@20)) extent: 40@40);
 		background: Color white;
 		draw.
 
@@ -203,6 +400,12 @@ MAGround >> initialize [
 	self background: (Color fromHexString: 'c7baae').
 ]
 
+{ #category : #services }
+MAGround >> isRunning [
+
+	^ self getTMASimulationServicesProvider isRunning. 
+]
+
 { #category : #events }
 MAGround >> positionChanged: aPoint for: aModelObject [
 
@@ -211,17 +414,41 @@ MAGround >> positionChanged: aPoint for: aModelObject [
 	].
 ]
 
+{ #category : #initialization }
+MAGround >> setRefreshingTo: anInteger [
+
+	refreshing := anInteger.
+]
+
 { #category : #'events - lifecycle' }
 MAGround >> simulationStepSent [
 
 	compt := compt + 1.
-	compt % 5 = 0 ifTrue: [ self opacity: 1 ]
+	compt % refreshing = 0 ifTrue: [ self updateInfoPanel ]
 ]
 
 { #category : #'events - control' }
 MAGround >> stopped [
 
 	self removeChildren 	
+]
+
+{ #category : #initialization }
+MAGround >> updateInfoPanel [
+
+	| eggs |
+	time text: compt asRopedText.
+	nbInsects text: self getInsects size asRopedText.
+	nbPheromones text:
+		(self getTMAPheromoneServicesProvider getPheromonesDict size
+		 + self getTMAPheromoneServicesProvider getPheromonesReturnDict size)
+			asRopedText.
+
+	eggs := 0.
+	self getAnts do: [ :ant | 
+		ant getStageName = #egg ifTrue: [ eggs := eggs + 1 ] ].
+	nbEggs text: eggs asRopedText.
+	nbAnts text: (self getAnts size - eggs) asRopedText
 ]
 
 { #category : #'events - lifecycle' }

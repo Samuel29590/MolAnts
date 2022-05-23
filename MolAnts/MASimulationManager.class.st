@@ -26,7 +26,7 @@ MASimulationManager class >> consumedComponentEvents [
 MASimulationManager class >> pauseSimulation [
 	<script>
 	
-	self passivate.
+	self passivate
 ]
 
 { #category : #scripts }
@@ -103,13 +103,11 @@ MASimulationManager >> componentActivate [
 	self getTMAStageEventsSubscriber subscribe: self.
 	self getTMARoleEventsSubscriber subscribe: self.
 	self getTMAPositionEventsSubscriber subscribe: self.
-	
-	self start.
+	isRunning := true.
 ]
 
 { #category : #'component life cycle' }
-MASimulationManager >> componentInitialize [ 
-	"Create a ground"
+MASimulationManager >> componentInitialize [
 
 	super componentInitialize.
 	simulationThread := nil.
@@ -119,22 +117,22 @@ MASimulationManager >> componentInitialize [
 	ants := OrderedCollection new.
 	nbAnt := 0.
 	insectsPos := Dictionary new.
-	
 	pheromones := MAPheromones start: 'Pheromones'.
-	
 	ground := MAGround start: 'Ground'.
-	ground forServices: TMAPheromoneServices useProvider: (pheromones componentName asSymbol) asSymbol.
+	ground
+		forServices: TMAPheromoneServices
+		useProvider: pheromones componentName asSymbol asSymbol.
+	self start
 ]
 
 { #category : #'component life cycle' }
 MASimulationManager >> componentPassivate [
 
+	super componentPassivate.
 	self getTMAStageEventsSubscriber unsubscribe: self.
 	self getTMARoleEventsSubscriber unsubscribe: self.
 	self getTMAPositionEventsSubscriber unsubscribe: self.
-	
-	super componentPassivate.
-
+	isRunning := false.
 ]
 
 { #category : #'component life cycle' }
