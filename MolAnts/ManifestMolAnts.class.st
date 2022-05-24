@@ -11,7 +11,7 @@ Class {
 
 { #category : #'code-critics' }
 ManifestMolAnts class >> ruleAssignmentInIfTrueRuleV1FalsePositive [
-	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-19T11:19:29.69331+02:00') #(#(#RGMethodDefinition #(#MAWorker #avoidPheromones:for: #false)) #'2022-05-19T13:59:34.536525+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-19T11:19:29.69331+02:00') #(#(#RGMethodDefinition #(#MAWorker #avoidPheromones:for: #false)) #'2022-05-19T13:59:34.536525+02:00') #(#(#RGClassDefinition #(#MAWorker)) #'2022-05-23T15:18:05.156659+02:00') )
 ]
 
 { #category : #'code-critics' }
@@ -22,6 +22,11 @@ ManifestMolAnts class >> ruleCascadedNextPutAllsRuleV1FalsePositive [
 { #category : #'code-critics' }
 ManifestMolAnts class >> ruleCodeCruftLeftInMethodsRuleV1FalsePositive [
 	^ #(#(#(#RGPackageDefinition #(#MolAnts)) #'2022-05-16T12:30:20.492871+01:00') )
+]
+
+{ #category : #'code-critics' }
+ManifestMolAnts class >> ruleEndTrueFalseRuleV1FalsePositive [
+	^ #(#(#(#RGClassDefinition #(#MAWorker)) #'2022-05-23T16:29:40.786383+02:00') )
 ]
 
 { #category : #'code-critics' }
@@ -36,7 +41,7 @@ ManifestMolAnts class >> ruleGuardingClauseRuleV1FalsePositive [
 
 { #category : #'code-critics' }
 ManifestMolAnts class >> ruleLongMethodsRuleV1FalsePositive [
-	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-18T11:02:23.093201+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-18T11:02:23.093201+02:00') #(#(#RGClassDefinition #(#MAWorker)) #'2022-05-23T16:29:45.158579+02:00') )
 ]
 
 { #category : #'code-critics' }
@@ -66,5 +71,5 @@ ManifestMolAnts class >> ruleStringConcatenationRuleV1FalsePositive [
 
 { #category : #'code-critics' }
 ManifestMolAnts class >> ruleTempsReadBeforeWrittenRuleV1FalsePositive [
-	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-20T10:15:12.898008+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#MAWorker #moveFrom: #false)) #'2022-05-20T10:15:12.898008+02:00') #(#(#RGClassDefinition #(#MAWorker)) #'2022-05-23T15:18:09.187734+02:00') )
 ]

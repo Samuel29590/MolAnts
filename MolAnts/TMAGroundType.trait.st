@@ -7,8 +7,9 @@ Trait {
 
 { #category : #'accessing - events' }
 TMAGroundType classSide >> consumedComponentEvents [
+
 	<componentContract>
-	^ {TMASimulationEvents}
+	^ { TMASimulationToGlobalEvents }
 ]
 
 { #category : #'accessing - services' }

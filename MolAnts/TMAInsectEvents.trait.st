@@ -1,10 +1,10 @@
 Trait {
-	#name : #TMAPositionEvents,
+	#name : #TMAInsectEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
 	#category : #'MolAnts-Molecule Contracts'
 }
 
 { #category : #events }
-TMAPositionEvents >> positionChangedFor: aModelObject oldPos: aPoint newPos: anotherPoint [
+TMAInsectEvents >> positionChangedFor: aModelObject oldPos: aPoint newPos: anotherPoint [
 ]

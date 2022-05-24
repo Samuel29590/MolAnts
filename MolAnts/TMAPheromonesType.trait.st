@@ -7,8 +7,9 @@ Trait {
 
 { #category : #'accessing - events' }
 TMAPheromonesType classSide >> consumedComponentEvents [
+
 	<componentContract>
-	^ {TMASimulationEvents}
+	^ { TMASimulationToGlobalEvents }
 ]
 
 { #category : #'accessing - services' }

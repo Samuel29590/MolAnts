@@ -7,12 +7,13 @@ Trait {
 
 { #category : #'accessing - events' }
 TMAInsectsType classSide >> consumedComponentEvents [
+
 	<componentContract>
-	^ {TMASimulationEvents}
+	^ { TMASimulationToGlobalEvents }
 ]
 
 { #category : #'accessing - events' }
 TMAInsectsType classSide >> producedComponentEvents [
 	<componentContract>
-	^ {TMAPositionEvents} 
+	^ {TMAInsectEvents} 
 ]

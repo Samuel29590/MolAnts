@@ -1,8 +1,8 @@
 Class {
 	#name : #MAAnt,
 	#superclass : #Object,
-	#traits : 'MolComponentImpl + TMAAntsType + TMASimulationEvents + TMAAntServices',
-	#classTraits : 'MolComponentImpl classTrait + TMAAntsType classTrait + TMASimulationEvents classTrait + TMAAntServices classTrait',
+	#traits : 'MolComponentImpl + TMAAntsType + TMAAntServices + TMASimulationToGlobalEvents',
+	#classTraits : 'MolComponentImpl classTrait + TMAAntsType classTrait + TMAAntServices classTrait + TMASimulationToGlobalEvents classTrait',
 	#instVars : [
 		'position',
 		'ageInMs'
@@ -18,8 +18,8 @@ MAAnt >> ageInMs [
 
 { #category : #'life cycle' }
 MAAnt >> componentActivate [
-		
-	self getTMASimulationEventsSubscriber subscribe: self.
+
+	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -35,9 +35,8 @@ MAAnt >> componentInitialize [
 
 { #category : #'life cycle' }
 MAAnt >> componentPassivate [
-		
-	self getTMASimulationEventsSubscriber unsubscribe: self.
-	
+
+	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -67,12 +66,6 @@ MAAnt >> getInsects [
 ]
 
 { #category : #services }
-MAAnt >> getPheromoneOwnersDict [
-
-	^ self getTMASimulationServicesProvider getPheromoneOwnersDict.
-]
-
-{ #category : #services }
 MAAnt >> getPheromonesDict [
 
 	^ self getTMASimulationServicesProvider getPheromonesDict.
@@ -91,18 +84,6 @@ MAAnt >> getStageName [
 ]
 
 { #category : #'component accessing' }
-MAAnt >> getTMASimulationEventsSubscriber [
-	| eventsSymbol eventsSubscriber itf |
-	itf := TMASimulationEvents.
-	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
-	eventsSymbol isCollection
-	 	ifTrue: 
-			[eventsSubscriber := MolComponentManager default locatorServices 
-						searchEventsSubscriberFor: TMASimulationEvents named: eventsSymbol ]. 
-	^eventsSubscriber
-]
-
-{ #category : #'component accessing' }
 MAAnt >> getTMASimulationServicesProvider [
 	| servicesSymbol servicesProvider itf |
 	itf := TMASimulationServices.
@@ -112,6 +93,18 @@ MAAnt >> getTMASimulationServicesProvider [
 			[servicesProvider := MolComponentManager default locatorServices 
 						searchServicesProviderFor: TMASimulationServices named: servicesSymbol]. 
 	^servicesProvider
+]
+
+{ #category : #'component accessing' }
+MAAnt >> getTMASimulationToGlobalEventsSubscriber [
+	| eventsSymbol eventsSubscriber itf |
+	itf := TMASimulationToGlobalEvents.
+	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
+	eventsSymbol isCollection
+	 	ifTrue: 
+			[eventsSubscriber := MolComponentManager default locatorServices 
+						searchEventsSubscriberFor: TMASimulationToGlobalEvents named: eventsSymbol ]. 
+	^eventsSubscriber
 ]
 
 { #category : #'component accessing' }
@@ -141,7 +134,6 @@ MAAnt >> position [
 { #category : #accessing }
 MAAnt >> position: aPoint [
 
-	position ~= aPoint ifFalse:[^self]. 
 	position := aPoint.
 ]
 
@@ -149,10 +141,4 @@ MAAnt >> position: aPoint [
 MAAnt >> removeStage [
 
 	MAStage stop: (#stage, self componentName asSymbol) asSymbol
-]
-
-{ #category : #'events - lifecycle' }
-MAAnt >> simulationStepSent [
-
-	self doSimulationStep.
 ]

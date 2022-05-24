@@ -1,12 +1,11 @@
 Class {
 	#name : #MAPheromones,
 	#superclass : #Object,
-	#traits : 'MolComponentImpl + TMAPheromonesType + TMASimulationEvents + TMAPheromoneServices',
-	#classTraits : 'MolComponentImpl classTrait + TMAPheromonesType classTrait + TMASimulationEvents classTrait + TMAPheromoneServices classTrait',
+	#traits : 'MolComponentImpl + TMAPheromonesType + TMAPheromoneServices + TMASimulationToGlobalEvents',
+	#classTraits : 'MolComponentImpl classTrait + TMAPheromonesType classTrait + TMAPheromoneServices classTrait + TMASimulationToGlobalEvents classTrait',
 	#instVars : [
 		'maxIntensity',
 		'pheromonesDict',
-		'pheromoneOwnersDict',
 		'pheromonesReturnDict'
 	],
 	#category : #'MolAnts-Model'
@@ -15,13 +14,13 @@ Class {
 { #category : #accessing }
 MAPheromones class >> maxIntensity [
 
-	^ 300.
+	^ 200
 ]
 
 { #category : #'life cycle' }
 MAPheromones >> componentActivate [
 
-	self getTMASimulationEventsSubscriber subscribe: self.
+	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -30,21 +29,19 @@ MAPheromones >> componentInitialize [
 	
 	maxIntensity := 100.
 	pheromonesDict := Dictionary new.
-	pheromoneOwnersDict := Dictionary new.
 	pheromonesReturnDict := Dictionary new.
 ]
 
 { #category : #'life cycle' }
 MAPheromones >> componentPassivate [
 
-	self getTMASimulationEventsSubscriber unsubscribe: self.
+	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
 
 { #category : #'life cycle' }
 MAPheromones >> componentRemove [
 
 	pheromonesDict := nil.
-	pheromoneOwnersDict := nil.
 	pheromonesReturnDict := nil.
 ]
 
@@ -52,10 +49,9 @@ MAPheromones >> componentRemove [
 MAPheromones >> doSimulationStep [
 
 	pheromonesDict keysDo: [ :each | 
-		pheromonesDict at: each update: [ :v | v-1 ].
-		(pheromonesDict at: each) <= 0 ifTrue: [ 
+		pheromonesDict at: each update: [ :v | v value: v value -1 ].
+		((pheromonesDict at: each) value) <= 0 ifTrue: [ 
 			pheromonesDict removeKey: each.
-			pheromoneOwnersDict removeKey: each
 		].
 	].
 
@@ -74,12 +70,6 @@ MAPheromones >> getMaxIntensity [
 ]
 
 { #category : #services }
-MAPheromones >> getPheromoneOwnersDict [
-
-	^ pheromoneOwnersDict .
-]
-
-{ #category : #services }
 MAPheromones >> getPheromonesDict [
 
 	^ pheromonesDict.
@@ -92,27 +82,35 @@ MAPheromones >> getPheromonesReturnDict [
 ]
 
 { #category : #'component accessing' }
-MAPheromones >> getTMASimulationEventsSubscriber [
+MAPheromones >> getTMASimulationToGlobalEventsSubscriber [
 	| eventsSymbol eventsSubscriber itf |
-	itf := TMASimulationEvents.
+	itf := TMASimulationToGlobalEvents.
 	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
 	eventsSymbol isCollection
 	 	ifTrue: 
 			[eventsSubscriber := MolComponentManager default locatorServices 
-						searchEventsSubscriberFor: TMASimulationEvents named: eventsSymbol ]. 
+						searchEventsSubscriberFor: TMASimulationToGlobalEvents named: eventsSymbol ]. 
 	^eventsSubscriber
 ]
 
 { #category : #events }
 MAPheromones >> pheromoneNew: aPoint for: anAnt [
 
-		(pheromonesDict includesKey: aPoint) ifFalse:[
-			pheromonesDict add: (aPoint -> maxIntensity).
-			pheromoneOwnersDict add: (aPoint -> anAnt).
-		] ifTrue: [
-			pheromonesDict at: aPoint  update: [:v | v - v + maxIntensity].
-		].
-	
+	(pheromonesDict includesKey: aPoint)
+		ifFalse: [ 
+			| pointRectangle antHillRectangle |
+			pointRectangle := BlBounds
+				                  origin: anAnt position - (20 @ 20)
+				                  extent: 40 @ 40.
+
+			antHillRectangle := BlBounds
+				                    origin:
+				                    MASimulationManager simulationAntHillPosition
+				                    extent: 0 @ 0.
+
+			(pointRectangle intersects: antHillRectangle) ifFalse: [ 
+				pheromonesDict add: aPoint -> (anAnt -> maxIntensity) ] ]
+		ifTrue: [ pheromonesDict at: aPoint put: anAnt -> maxIntensity ]
 ]
 
 { #category : #events }
@@ -125,10 +123,4 @@ MAPheromones >> pheromoneReturnNew: aPoint for: anAnt [
 		].
 	
 
-]
-
-{ #category : #'events - lifecycle' }
-MAPheromones >> simulationStepSent [
-
-	self doSimulationStep.
 ]

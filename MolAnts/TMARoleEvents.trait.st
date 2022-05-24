@@ -10,6 +10,10 @@ TMARoleEvents >> ant: anAnt eatAt: aPoint [
 ]
 
 { #category : #events }
+TMARoleEvents >> insectDelivered [
+]
+
+{ #category : #events }
 TMARoleEvents >> positionChanged: aPoint for: anAnt [
 ]
 

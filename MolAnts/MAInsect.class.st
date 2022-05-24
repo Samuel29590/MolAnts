@@ -1,8 +1,8 @@
 Class {
 	#name : #MAInsect,
 	#superclass : #Object,
-	#traits : 'MolComponentImpl + TMAInsectsType + TMASimulationEvents',
-	#classTraits : 'MolComponentImpl classTrait + TMAInsectsType classTrait + TMASimulationEvents classTrait',
+	#traits : 'MolComponentImpl + TMAInsectsType + TMASimulationToGlobalEvents',
+	#classTraits : 'MolComponentImpl classTrait + TMAInsectsType classTrait + TMASimulationToGlobalEvents classTrait',
 	#instVars : [
 		'position',
 		'ageInMs',
@@ -13,8 +13,8 @@ Class {
 
 { #category : #'life cycle' }
 MAInsect >> componentActivate [
-		
-	self getTMASimulationEventsSubscriber subscribe: self.
+
+	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -26,8 +26,8 @@ MAInsect >> componentInitialize [
 
 { #category : #'life cycle' }
 MAInsect >> componentPassivate [
-		
-	self getTMASimulationEventsSubscriber unsubscribe: self.
+
+	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
 
 { #category : #'life cycle' }
@@ -35,33 +35,25 @@ MAInsect >> doSimulationStep [
 
 	stage = #alive ifTrue: [
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
-		self position: (position + (((Random new next * 10 - 5) rounded) @ ((Random new next * 10 - 5) rounded))).  
+		self position: (position + (((Random new next * 2 - 1) rounded) @ ((Random new next * 2 - 1) rounded))).  
 	].
 ]
 
 { #category : #'component accessing' }
-MAInsect >> getTMAPositionEventsNotifier [
-	^self eventsNotifiers at: TMAPositionEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: TMAPositionEvents name: nil].
+MAInsect >> getTMAInsectEventsNotifier [
+	^self eventsNotifiers at: TMAInsectEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: TMAInsectEvents name: nil].
 ]
 
 { #category : #'component accessing' }
-MAInsect >> getTMASimulationEventsSubscriber [
+MAInsect >> getTMASimulationToGlobalEventsSubscriber [
 	| eventsSymbol eventsSubscriber itf |
-	itf := TMASimulationEvents.
+	itf := TMASimulationToGlobalEvents.
 	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
 	eventsSymbol isCollection
 	 	ifTrue: 
 			[eventsSubscriber := MolComponentManager default locatorServices 
-						searchEventsSubscriberFor: TMASimulationEvents named: eventsSymbol ]. 
+						searchEventsSubscriberFor: TMASimulationToGlobalEvents named: eventsSymbol ]. 
 	^eventsSubscriber
-]
-
-{ #category : #accessing }
-MAInsect >> insectDead: anInsect [
-
-	self = anInsect ifTrue: [
-		stage := #dead.
-	]
 ]
 
 { #category : #'life cycle' }
@@ -85,14 +77,8 @@ MAInsect >> position: aPoint [
 	position y >= MASimulationManager simulationHeight ifTrue: [ 
 		position := position x @ MASimulationManager simulationWidth ].
 
-	self getTMAPositionEventsNotifier
+	self getTMAInsectEventsNotifier 
 		positionChangedFor: self
 		oldPos: oldPos
 		newPos: position
-]
-
-{ #category : #'life cycle' }
-MAInsect >> simulationStepSent [
-
-	self doSimulationStep.
 ]

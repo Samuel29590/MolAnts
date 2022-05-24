@@ -12,11 +12,11 @@ Class {
 
 { #category : #'life cycle' }
 MAStage >> componentInitialize [
-	
-	eggStateDurationInMs := (Random new next * 10000) rounded + 1000.
-	adultStateDurationInMs := (Random new next * 50000) rounded + 50000.
-	
-	self initializeRole.
+
+	eggStateDurationInMs := (Random new next * 5000) rounded + 1000.
+	adultStateDurationInMs := (Random new next * 25000) rounded + 25000.
+
+	self initializeRole
 ]
 
 { #category : #'life cycle' }
@@ -32,24 +32,20 @@ MAStage >> componentRemove [
 
 { #category : #private }
 MAStage >> computeStageFor: anAnt [
-	
-	self getStageName = #egg ifTrue:[
-		anAnt ageInMs > eggStateDurationInMs ifTrue:[ 
-			stageName := #adult.
-			self getTMAStageEventsNotifier stageNameChanged: stageName for: anAnt.
-			self forServices: TMARoleServices useProvider: (#role, self componentName asSymbol) asSymbol.
-			self getTMAStageEventsNotifier roleChanged: (self getRole getRoleName) for: anAnt.
-		].
-		^self	 
-	]. 
 
-	self getStageName = #adult ifTrue:[
-		anAnt ageInMs > adultStateDurationInMs ifTrue:[
+	self getStageName = #egg ifTrue: [ 
+		anAnt ageInMs > eggStateDurationInMs ifTrue: [ 
+			stageName := #adult.
+			self
+				forServices: TMARoleServices
+				useProvider: (#role , self componentName asSymbol) asSymbol ].
+		^ self ].
+
+	self getStageName = #adult ifTrue: [ 
+		anAnt ageInMs > adultStateDurationInMs ifTrue: [ 
 			stageName := #dead.
-			self getTMAStageEventsNotifier stageNameChanged: stageName for: anAnt. 
-		].
-		^self	
-	].
+			self getTMAStageEventsNotifier stageChanged: stageName for: anAnt ].
+		^ self ]
 ]
 
 { #category : #private }
@@ -132,5 +128,6 @@ MAStage >> moveFrom: anAnt [
 { #category : #'life cycle' }
 MAStage >> removeRole [
 
-	role class stop: (#role, self componentName asSymbol) asSymbol
+	role ifNotNil:[
+	role class stop: (#role , self componentName asSymbol) asSymbol]
 ]

@@ -7,14 +7,19 @@ Trait {
 
 { #category : #'accessing - events' }
 TMASimulationManagerType classSide >> consumedComponentEvents [
+
 	<componentContract>
-	^ {TMAStageEvents . TMARoleEvents . TMAPositionEvents}
+	^ { 
+			TMAStageEvents .
+		  TMARoleEvents.
+		  TMAInsectEvents }
 ]
 
 { #category : #'accessing - events' }
 TMASimulationManagerType classSide >> producedComponentEvents [
+
 	<componentContract>
-	^ {TMASimulationEvents } 
+	^ { TMASimulationToGlobalEvents }
 ]
 
 { #category : #'accessing - services' }

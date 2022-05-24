@@ -1,8 +1,8 @@
 Class {
 	#name : #MASimulationManager,
 	#superclass : #MolAbstractComponentImpl,
-	#traits : 'TMASimulationManagerType + TMAStageEvents + TMASimulationServices + TMARoleEvents + TMAPositionEvents',
-	#classTraits : 'TMASimulationManagerType classTrait + TMAStageEvents classTrait + TMASimulationServices classTrait + TMARoleEvents classTrait + TMAPositionEvents classTrait',
+	#traits : 'TMASimulationManagerType + TMASimulationServices + TMARoleEvents + TMAInsectEvents + TMAStageEvents',
+	#classTraits : 'TMASimulationManagerType classTrait + TMASimulationServices classTrait + TMARoleEvents classTrait + TMAInsectEvents classTrait + TMAStageEvents classTrait',
 	#instVars : [
 		'simulationThread',
 		'ground',
@@ -11,7 +11,8 @@ Class {
 		'ants',
 		'nbAnt',
 		'insectsPos',
-		'pheromones'
+		'pheromones',
+		'nbDelivered'
 	],
 	#category : #'MolAnts-Core'
 }
@@ -19,7 +20,7 @@ Class {
 { #category : #'accessing - events' }
 MASimulationManager class >> consumedComponentEvents [
 	<componentContract>
-	^ {TMAStageEvents . TMARoleEvents . TMAPositionEvents}
+	^ {TMAStageEvents . TMARoleEvents . TMAInsectEvents}
 ]
 
 { #category : #scripts }
@@ -39,7 +40,7 @@ MASimulationManager class >> playSimulation [
 { #category : #properties }
 MASimulationManager class >> simulationAntHillPosition [
 
-	^ 200@200.
+	^ 400 @ 250
 ]
 
 { #category : #properties }
@@ -51,13 +52,15 @@ MASimulationManager class >> simulationHeight [
 { #category : #properties }
 MASimulationManager class >> simulationStepDurationInMs [
 
-	^ 50
+	^ 30
 ]
 
 { #category : #properties }
 MASimulationManager class >> simulationWidth [
 
-	^ 500
+	" Minimum recommended : 500 for a clear UI"
+
+	^ 800
 ]
 
 { #category : #scripts }
@@ -97,13 +100,13 @@ MASimulationManager >> ants [
 ]
 
 { #category : #'component life cycle' }
-MASimulationManager >> componentActivate [ 
+MASimulationManager >> componentActivate [
 
 	super componentActivate.
 	self getTMAStageEventsSubscriber subscribe: self.
 	self getTMARoleEventsSubscriber subscribe: self.
-	self getTMAPositionEventsSubscriber subscribe: self.
-	isRunning := true.
+	self getTMAInsectEventsSubscriber subscribe: self.
+	isRunning := true
 ]
 
 { #category : #'component life cycle' }
@@ -116,6 +119,7 @@ MASimulationManager >> componentInitialize [
 	isInsectsCreated := false.
 	ants := OrderedCollection new.
 	nbAnt := 0.
+	nbDelivered := 0.
 	insectsPos := Dictionary new.
 	pheromones := MAPheromones start: 'Pheromones'.
 	ground := MAGround start: 'Ground'.
@@ -131,8 +135,8 @@ MASimulationManager >> componentPassivate [
 	super componentPassivate.
 	self getTMAStageEventsSubscriber unsubscribe: self.
 	self getTMARoleEventsSubscriber unsubscribe: self.
-	self getTMAPositionEventsSubscriber unsubscribe: self.
-	isRunning := false.
+	self getTMAInsectEventsSubscriber unsubscribe: self.
+	isRunning := false
 ]
 
 { #category : #'component life cycle' }
@@ -144,26 +148,22 @@ MASimulationManager >> componentRemove [
 
 { #category : #private }
 MASimulationManager >> createAnt [
-	
-	| name ant |
 
+	| name ant |
 	isAntHillCreated ifTrue: [ 
-		
 		nbAnt := nbAnt + 1.
-		
-		name := ('Ant', nbAnt printString) asSymbol.
+
+		name := ('Ant' , nbAnt printString) asSymbol.
 		ant := MAAnt start: name.
 		ant position: self class simulationAntHillPosition.
-		
-		"Adding events producer into SimulationMManager and Ground"
-		self forEvents: TMAStageEvents addProducer: (ant getStage componentName). 
-		self forEvents: TMARoleEvents addProducer: (ant getStage getRole componentName). 
-		self forEvents: TMAPositionEvents addProducer: name.
-		
-		ants add: ant.
-	].
 
-	
+		"Adding events producer into SimulationMManager and Ground"
+		self
+			forEvents: TMARoleEvents
+			addProducer: ant getStage getRole componentName.
+		self forEvents: TMAInsectEvents addProducer: name.
+
+		ants add: ant ]
 ]
 
 { #category : #private }
@@ -196,7 +196,7 @@ MASimulationManager >> createInsects [
 		insect position: newPos.
 		
 		"Adding events producer into SimulationMManager"
-		self forEvents: TMAPositionEvents addProducer: name.
+		self forEvents: TMAInsectEvents addProducer: name.
 		
 		"Add the insect to the dictionary of their positions."
 		(insectsPos includesKey: newPos) ifFalse:[ | collection |
@@ -208,12 +208,6 @@ MASimulationManager >> createInsects [
 		].
 	].
 	
-]
-
-{ #category : #services }
-MASimulationManager >> getPheromoneOwnersDict [
-
-	^ pheromones getPheromoneOwnersDict.
 ]
 
 { #category : #services }
@@ -229,14 +223,14 @@ MASimulationManager >> getPheromonesReturnDict [
 ]
 
 { #category : #'component accessing' }
-MASimulationManager >> getTMAPositionEventsSubscriber [
+MASimulationManager >> getTMAInsectEventsSubscriber [
 	| eventsSymbol eventsSubscriber itf |
-	itf := TMAPositionEvents.
+	itf := TMAInsectEvents.
 	eventsSymbol := self eventsSubscribers at: itf ifAbsent: [^MolNotFoundEventsSubscriber new interface: itf name: nil].
 	eventsSymbol isCollection
 	 	ifTrue: 
 			[eventsSubscriber := MolComponentManager default locatorServices 
-						searchEventsSubscriberFor: TMAPositionEvents named: eventsSymbol ]. 
+						searchEventsSubscriberFor: TMAInsectEvents named: eventsSymbol ]. 
 	^eventsSubscriber
 ]
 
@@ -253,8 +247,8 @@ MASimulationManager >> getTMARoleEventsSubscriber [
 ]
 
 { #category : #'component accessing' }
-MASimulationManager >> getTMASimulationEventsNotifier [
-	^self eventsNotifiers at: TMASimulationEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: TMASimulationEvents name: nil].
+MASimulationManager >> getTMASimulationToGlobalEventsNotifier [
+	^self eventsNotifiers at: TMASimulationToGlobalEvents ifAbsent: [^MolNotFoundEventsNotifier new interface: TMASimulationToGlobalEvents name: nil].
 ]
 
 { #category : #'component accessing' }
@@ -267,6 +261,12 @@ MASimulationManager >> getTMAStageEventsSubscriber [
 			[eventsSubscriber := MolComponentManager default locatorServices 
 						searchEventsSubscriberFor: TMAStageEvents named: eventsSymbol ]. 
 	^eventsSubscriber
+]
+
+{ #category : #events }
+MASimulationManager >> insectDelivered [
+
+	nbDelivered := nbDelivered + 1.
 ]
 
 { #category : #services }
@@ -299,13 +299,35 @@ MASimulationManager >> isInsectsCreated: anObject [
 	isInsectsCreated := anObject
 ]
 
+{ #category : #events }
+MASimulationManager >> nbDelivered [
+
+	^ nbDelivered
+]
+
+{ #category : #events }
+MASimulationManager >> newPositionCheckBorder: aPoint [
+
+	"Check if the ant is in the ground. If not keep the ant on the ground."
+
+	| newPos |
+	newPos := aPoint.
+
+	newPos x < 0 ifTrue: [ newPos := 0 @ newPos y ].
+	newPos y < 0 ifTrue: [ newPos := newPos x @ 0 ].
+	newPos x > MASimulationManager simulationWidth ifTrue: [ 
+		newPos := MASimulationManager simulationWidth @ newPos y ].
+	newPos y > MASimulationManager simulationHeight ifTrue: [ 
+		newPos := newPos x @ MASimulationManager simulationHeight ].
+	^ newPos
+]
+
 { #category : #services }
 MASimulationManager >> pause [
 
-	self isRunning ifFalse:[^self].
+	self isRunning ifFalse: [ ^ self ].
 	self pauseSimulationLoop.
 	isRunning := false.
-	self getTMASimulationEventsNotifier paused.
 ]
 
 { #category : #private }
@@ -385,14 +407,7 @@ MASimulationManager >> removePheromones [
 ]
 
 { #category : #events }
-MASimulationManager >> roleChanged: aSymbol for: aModelObject [
-
-	self getTMASimulationEventsNotifier ant: aModelObject changeRole: aSymbol.
-	^ self
-]
-
-{ #category : #events }
-MASimulationManager >> stageNameChanged: aSymbol for: aModelObject [
+MASimulationManager >> stageChanged: aSymbol for: aModelObject [
 
 	aSymbol = #dead ifTrue: [ ants remove: aModelObject ]
 ]
@@ -407,7 +422,7 @@ MASimulationManager >> start [
 
 	self startSimulationLoop.
 	isRunning := true.
-	self getTMASimulationEventsNotifier started
+	self getTMASimulationToGlobalEventsNotifier started
 ]
 
 { #category : #private }
@@ -416,7 +431,7 @@ MASimulationManager >> startSimulationLoop [
 	simulationThread ifNil: [ 
 		simulationThread := [ 
 		                    [ true ] whileTrue: [ 
-			                    self getTMASimulationEventsNotifier
+			                    self getTMASimulationToGlobalEventsNotifier 
 				                    simulationStepSent.
 			                    (Delay forMilliseconds:
 				                     self class simulationStepDurationInMs) wait ] ]
@@ -442,7 +457,7 @@ MASimulationManager >> stop [
 
 	isRunning := false.
 
-	self getTMASimulationEventsNotifier stopped
+	self getTMASimulationToGlobalEventsNotifier stopped
 ]
 
 { #category : #private }
@@ -470,13 +485,13 @@ MASimulationManager >> worker: anAnt eatAt: aPoint [
 { #category : #events }
 MASimulationManager >> workerExploringPositionChanged: aPoint for: anAnt [
 
-	self getTMASimulationEventsNotifier pheromoneNew: aPoint for: anAnt.
-	"self getTMASimulationEventsNotifier positionChanged: aPoint for: anAnt."
+	self getTMASimulationToGlobalEventsNotifier pheromoneNew: aPoint for: anAnt
 ]
 
 { #category : #events }
 MASimulationManager >> workerReturningPositionChanged: aPoint for: anAnt [
-	
-	self getTMASimulationEventsNotifier pheromoneReturnNew: aPoint for: anAnt.
-	"self getTMASimulationEventsNotifier positionChanged: aPoint for: anAnt."
+
+	self getTMASimulationToGlobalEventsNotifier
+		pheromoneReturnNew: aPoint
+		for: anAnt
 ]
