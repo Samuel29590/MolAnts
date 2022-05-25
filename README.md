@@ -1,6 +1,6 @@
 # MolAnts
 
-Ants version Molecule
+This project is inspired by an another project on pharo: ![Ants](https://github.com/plantec/Ants), and this version uses: ![Molecule](https://github.com/OpenSmock/Molecule).
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ Pharo 8, Pharo 9 and Pharo 10 :
 
 ### Prerequisites
 
-MolAnts require Molecule (https://github.com/OpenSmock/Molecule) for the component aspect and Bloc (https://github.com/pharo-graphics/Bloc) for the visual aspect.
+MolAnts require ![Molecule](https://github.com/OpenSmock/Molecule) for the component aspect and ![Bloc](https://github.com/pharo-graphics/Bloc) for the visual aspect.
   
 ## Overview of the Components, Types, Services and Events organisation with Molecule
 
