@@ -18,8 +18,36 @@ MolAnts require Molecule (https://github.com/OpenSmock/Molecule) for the compone
   
 ## Overview of the Components, Types, Services and Events organisation with Molecule
 
-![MolAnts](https://user-images.githubusercontent.com/64481702/166678508-2be44458-5095-4cd3-b772-d144f2707f6c.png)
-
-## MolAnts : an example usage of Molecule
-
 ![MolAnts_schema](https://user-images.githubusercontent.com/64481702/170257989-1f9b94a8-2678-401c-9e21-0b170af226ec.svg)
+
+### Simulation
+
+#### TMASimulationToGlobalEvents
+
+#### TMASimulationServices
+
+### Insects
+
+#### TMAInsectEvents
+
+### Pheromones
+
+#### TMAPheromoneServices
+
+### Ants
+
+#### TMAAntServices
+
+### Stages
+
+#### TMAStageServices
+
+#### TMAStageEvents
+
+### Roles
+
+#### TMARolesServices
+
+#### TMARolesEvents
+
+### Ground
