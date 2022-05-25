@@ -20,4 +20,4 @@ MolAnts require Molecule (https://github.com/OpenSmock/Molecule) for the compone
 ![MolAnts](https://user-images.githubusercontent.com/64481702/166678508-2be44458-5095-4cd3-b772-d144f2707f6c.png)
 
 ## MolAnts : an example usage of Molecule
-![MolAnts-Schéma](https://user-images.githubusercontent.com/64481702/170202677-9227099e-63e3-4bd1-adf9-6bb16167f53e.png)
+![MolAnts(1)(1)(1)(1)(1)](https://user-images.githubusercontent.com/64481702/170203610-bdc4bf59-dd21-485c-b0be-2b918890dcea.svg)
