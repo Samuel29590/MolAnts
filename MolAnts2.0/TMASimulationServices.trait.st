@@ -5,8 +5,26 @@ Trait {
 	],
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
+
+{ #category : #services }
+TMASimulationServices >> getAnts [
+
+	
+]
+
+{ #category : #services }
+TMASimulationServices >> getInsectsPos [
+
+	
+]
+
+{ #category : #services }
+TMASimulationServices >> getNbDelivered [
+
+	
+]
 
 { #category : #services }
 TMASimulationServices >> getPheromonesDict [
@@ -17,22 +35,10 @@ TMASimulationServices >> getPheromonesReturnDict [
 ]
 
 { #category : #services }
-TMASimulationServices >> insectsPos [
-]
-
-{ #category : #services }
 TMASimulationServices >> isRunning [
 
 	^isRunning ifNil: [ isRunning := false ].
 	
-]
-
-{ #category : #services }
-TMASimulationServices >> pause [
-]
-
-{ #category : #services }
-TMASimulationServices >> restart [
 ]
 
 { #category : #services }

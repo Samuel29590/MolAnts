@@ -2,7 +2,7 @@ Trait {
 	#name : #TMAPheromoneServices,
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #services }

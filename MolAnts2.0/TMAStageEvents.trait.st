@@ -2,7 +2,7 @@ Trait {
 	#name : #TMAStageEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #events }

@@ -2,19 +2,11 @@ Trait {
 	#name : #TMARoleEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #events }
-TMARoleEvents >> ant: anAnt eatAt: aPoint [
-]
-
-{ #category : #events }
 TMARoleEvents >> insectDelivered [
-]
-
-{ #category : #events }
-TMARoleEvents >> positionChanged: aPoint for: anAnt [
 ]
 
 { #category : #events }

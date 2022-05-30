@@ -14,17 +14,20 @@ Class {
 		'refreshing',
 		'nbDelivered'
 	],
-	#category : #'MolAnts-View'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'life cycle' }
 MAGround >> componentActivate [
 
+	"Activation of the MAGround component."
 	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
 MAGround >> componentInitialize [
+
+	"Initialization of the MAGround component."
 
 	compt := 0.
 	refreshing := 5.
@@ -38,21 +41,25 @@ MAGround >> componentInitialize [
 { #category : #'life cycle' }
 MAGround >> componentPassivate [
 
+	"Passivating the MAGround component."
+
 	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
 
 { #category : #'life cycle' }
 MAGround >> componentRemove [
-	
+
+	"Removing the MAGround component."
+
 	compt := 0.
 	self stopped.
-	mySpace ifNotNil:[
-		mySpace close.
-	].
+	mySpace ifNotNil: [ mySpace close ]
 ]
 
 { #category : #initialization }
 MAGround >> createInfoPanel [
+
+	"Initialize the info panel of the view. It initialize each item of the panel (buttons, texts ...)."
 
 	| infoPanel button |
 	infoPanel := BlElement new.
@@ -108,7 +115,8 @@ MAGround >> createInfoPanel [
 				 button isVisible ifTrue: [ MASimulationManager stopSimulation ].
 				 anEvent consumed: true ]).
 	infoPanel addChild: button.
-
+	
+	"Adding the text for refreshing."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 @ 55;
 			  background: Color transparent) text:
@@ -184,7 +192,7 @@ MAGround >> createInfoPanel [
 				 anEvent consumed: true ]).
 	infoPanel addChild: button.
 
-	"step text"
+	"steps text"
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 + 370 @ 55;
 			  background: Color transparent) text: 'steps.' asRopedText).
@@ -217,10 +225,10 @@ MAGround >> createInfoPanel [
 			  background: Color transparent) text:
 			 'Number of insects delivered :' asRopedText).
 	nbDelivered := BlTextElement new
-		             relocate:
-			             MASimulationManager simulationWidth / 10 @ 200;
-		             background: Color transparent;
-		             text: '000' asRopedText.
+		               relocate:
+			               MASimulationManager simulationWidth / 10 @ 200;
+		               background: Color transparent;
+		               text: '000' asRopedText.
 	infoPanel addChild: nbDelivered.
 
 	"Ajout du nombre de pheromones à l'interface."
@@ -263,22 +271,19 @@ MAGround >> createInfoPanel [
 	infoPanel addChild: nbAnts
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #events }
 MAGround >> doSimulationStep [
+
+	"Incrementing the number of step, then refreshing the view if it's necessary."
 
 	compt := compt + 1.
 	compt % refreshing = 0 ifTrue: [ self updateInfoPanel ]
 ]
 
 { #category : #drawing }
-MAGround >> drawMeAndChildrenOnSpartaCanvas: aCanvas [
-
-	self drawOnSpartaCanvas: aCanvas.
-	self drawChildrenOnSpartaCanvas: aCanvas
-]
-
-{ #category : #drawing }
 MAGround >> drawOnSpartaCanvas: aCanvas [
+
+	"Re writing this method here, in order to directly draw inside the canvas all the elements of the system. Tihs permit to keep good performances even if there is a lot of elements to draw."
 
 	super drawOnSpartaCanvas: aCanvas.
 
@@ -288,7 +293,7 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 				 extent: 40 @ 40);
 		background: Color white;
 		draw.
-		
+
 	self getTMAPheromoneServicesProvider getPheromonesDict ifNotNil: [ 
 		self getTMAPheromoneServicesProvider getPheromonesDict 
 			keysAndValuesDo: [ :k :v | 
@@ -309,7 +314,7 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 						backgroundAlpha:
 							v / self getTMAPheromoneServicesProvider getMaxIntensity;
 						draw ] ].
-				
+
 	self getInsects ifNotNil: [ 
 		self getInsects keysAndValuesDo: [ :k :v | 
 			aCanvas figure
@@ -343,13 +348,16 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 { #category : #services }
 MAGround >> getAnts [
 
-	^ self getTMASimulationServicesProvider ants. 
+	"Get all the MAAnt instances, in order to draw them on the canvas."
+	^ self getTMASimulationServicesProvider getAnts
 ]
 
 { #category : #services }
 MAGround >> getInsects [
 
-	^ self getTMASimulationServicesProvider insectsPos. 
+	"Get all the MAInesct instances, in order to draw them on the canvas."
+
+	^ self getTMASimulationServicesProvider getInsectsPos
 ]
 
 { #category : #'component accessing' }
@@ -391,6 +399,7 @@ MAGround >> getTMASimulationToGlobalEventsSubscriber [
 { #category : #initialization }
 MAGround >> initialize [
 
+	"Initialization of the ground"
 	super initialize.
 	self size: MASimulationManager simulationWidth
 		@ MASimulationManager simulationHeight.
@@ -406,16 +415,21 @@ MAGround >> isRunning [
 { #category : #initialization }
 MAGround >> setRefreshingTo: anInteger [
 
-	refreshing := anInteger.
+	"Changing the frequence of the view actualization."
+
+	refreshing := anInteger
 ]
 
 { #category : #initialization }
 MAGround >> updateInfoPanel [
 
+	"Modify each elements of the info panel. It permit to keep the view up to date with the simulation."
+
 	| eggs |
 	time text: compt asRopedText.
 	nbInsects text: self getInsects size asRopedText.
-	nbDelivered text: self getTMASimulationServicesProvider nbDelivered asRopedText.
+	nbDelivered text:
+		self getTMASimulationServicesProvider getNbDelivered asRopedText.
 	nbPheromones text:
 		(self getTMAPheromoneServicesProvider getPheromonesDict size
 		 + self getTMAPheromoneServicesProvider getPheromonesReturnDict size)
@@ -426,12 +440,4 @@ MAGround >> updateInfoPanel [
 		ant getStageName = #egg ifTrue: [ eggs := eggs + 1 ] ].
 	nbEggs text: eggs asRopedText.
 	nbAnts text: (self getAnts size - eggs) asRopedText
-]
-
-{ #category : #'as yet unclassified' }
-MAGround >> workerEat: anAnt [
-
-	self childWithId: anAnt componentName ifFound: [ :e |
-		e background: Color orange.	
-	].
 ]

@@ -2,7 +2,7 @@ Trait {
 	#name : #TMASimulationManagerType,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'accessing - events' }
@@ -26,4 +26,11 @@ TMASimulationManagerType classSide >> producedComponentEvents [
 TMASimulationManagerType classSide >> providedComponentServices [
 	<componentContract>
 	^ {TMASimulationServices} 
+]
+
+{ #category : #'accessing - services' }
+TMASimulationManagerType classSide >> usedComponentServices [
+
+	<componentContract>
+	^ { TMAPheromoneServices }
 ]

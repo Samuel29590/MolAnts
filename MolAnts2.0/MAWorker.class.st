@@ -5,14 +5,16 @@ Class {
 		'phase',
 		'oldPositions'
 	],
-	#category : #'MolAnts-Model'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #position }
 MAWorker >> avoidPheromone: aPoint for: anAnt [
 
+	"This method return the new position of the ant after analyzing the highest pheromone around him."
+
 	| newPos onTop onLeft onRight onBottom |
-	"Detecting where is the pheromone from the ant."
+	"Detecting where is the pheromone around the ant."
 	(anAnt position - aPoint) x = 0
 		ifTrue: [ 
 			onLeft := false.
@@ -39,7 +41,7 @@ MAWorker >> avoidPheromone: aPoint for: anAnt [
 					onTop := true.
 					onBottom := false ] ].
 
-	"Choosing the new position from the old pheromone."
+	"Choosing the new position to avoid the highest pheromone."
 	newPos := anAnt position.
 	onLeft
 		ifTrue: [ 
@@ -67,13 +69,17 @@ MAWorker >> avoidPheromone: aPoint for: anAnt [
 { #category : #'life cycle' }
 MAWorker >> componentInitialize [
 
+	"Initialization of the MAWorker component."
+
 	roleName := #worker.
 	phase := #explore.
-	oldPositions := OrderedCollection new.
+	oldPositions := OrderedCollection new
 ]
 
 { #category : #role }
 MAWorker >> doSimulationStepExplore: anAnt [
+
+	"A worker that explore, look at each step if their are insects visible by him. And if an insect is visible, the worker eat it and notify the MASimulationManager of an eating and change his phase."
 
 	| antRectangle |
 	antRectangle := BlBounds
@@ -94,18 +100,14 @@ MAWorker >> doSimulationStepExplore: anAnt [
 { #category : #role }
 MAWorker >> doSimulationStepFor: anAnt [
 
-	phase = #explore ifTrue: [
-		self doSimulationStepExplore: anAnt.
-	].
-
-	phase = #return ifTrue: [
-			self doSimulationStepReturn: anAnt.
-	].
-
+	phase = #explore ifTrue: [ self doSimulationStepExplore: anAnt ].
+	phase = #return ifTrue: [ self doSimulationStepReturn: anAnt ]
 ]
 
 { #category : #role }
 MAWorker >> doSimulationStepReturn: anAnt [
+
+	"A worker that is returning to the ant hill look at each step if he is around the ant hill. If he is around the ant hill he notify the MASimulationMangaer of a delivery and change is phase."
 
 	| antRectangle antHillRectangle |
 	antRectangle := BlBounds
@@ -124,19 +126,22 @@ MAWorker >> doSimulationStepReturn: anAnt [
 
 { #category : #position }
 MAWorker >> followAnOtherExplorer: aPheromoneOrderedCollection for: anAnt [
-	
+
+	"This method permit to follow pheromones of others."
+
 	| newPos randomPheromone |
-	
-	randomPheromone := Random new nextIntegerBetween: 1 and: aPheromoneOrderedCollection size .
+	randomPheromone := Random new
+		                   nextIntegerBetween: 1
+		                   and: aPheromoneOrderedCollection size.
 	newPos := aPheromoneOrderedCollection at: randomPheromone.
 
-	^ newPos.
+	^ newPos
 ]
 
 { #category : #position }
 MAWorker >> getMyHightPheromoneAround: anAnt [
 
-	"Function that permit to retrieve all exploration pheromones of an ant around this ant."
+	"This method return the pheromone with the highest intensity around an ant."
 
 	| antRectangle maxIntensity bestPheromonePos |
 	antRectangle := BlBounds
@@ -156,40 +161,6 @@ MAWorker >> getMyHightPheromoneAround: anAnt [
 						maxIntensity := v value.
 						bestPheromonePos := k ] ] ] ] ].
 	^ bestPheromonePos
-]
-
-{ #category : #position }
-MAWorker >> getMyPheromonesAround: anAnt [
-
-	"Function that permit to retrieve all exploration pheromones of an ant around this ant."
-
-	| antRectangle othersPheromonesVisibles pheromonesVisibles maxIntensity bestPheromonePos |
-	antRectangle := BlBounds
-		                origin: anAnt position - (5 @ 5)
-		                extent: 10 @ 10.
-
-	othersPheromonesVisibles := OrderedCollection new.
-	maxIntensity := 0.
-	bestPheromonePos := nil.
-
-	anAnt getPheromonesDict keysAndValuesDo: [ :k :v | 
-		| pheromoneRectangle |
-		k = anAnt position ifFalse: [ 
-			pheromoneRectangle := BlBounds origin: k extent: 0 @ 0.
-			(antRectangle intersects: pheromoneRectangle) ifTrue: [ 
-				v key = anAnt ifTrue: [ 
-					v value > maxIntensity ifTrue: [ 
-						maxIntensity := v value.
-						bestPheromonePos := k ] ] ] ] ].
-
-	anAnt getPheromonesDict keysDo: [ :each | 
-		| pheromoneRectangle |
-		each = anAnt position ifFalse: [ 
-			pheromoneRectangle := BlBounds origin: each extent: 0 @ 0.
-			(antRectangle intersects: pheromoneRectangle) ifTrue: [ 
-				(anAnt getPheromonesDict at: each) key = anAnt ifTrue: [ 
-					pheromonesVisibles add: each ] ] ] ].
-	^ pheromonesVisibles
 ]
 
 { #category : #position }
@@ -223,11 +194,13 @@ MAWorker >> getOthersPheromonesAround: anAnt [
 { #category : #position }
 MAWorker >> getPheromonesAround: anAnt [
 
+	"This method permit to get all pheromone around anAnt, the old positions of the ant aren't in the orderedCollection that is returning."
+
 	| antRectangle pheromonesDict pheromonesVisibles |
 	antRectangle := BlBounds
 		                origin: anAnt position - (6 @ 6)
 		                extent: 12 @ 12.
-		
+
 	pheromonesDict := anAnt getPheromonesDict.
 	pheromonesVisibles := OrderedCollection new.
 
@@ -259,6 +232,8 @@ MAWorker >> moveFrom: anAnt [
 
 { #category : #position }
 MAWorker >> moveFromExplore: anAnt [
+
+	"This method is the actual behavior of ants. If an ant detect pheromones of other ants it will follow them. But if their is no others pheromones, the ant take his own track by avoiding is precedent pheromones. Of course some time their is random move to keep deplacement more realistic."
 
 	| newPos pheromoneToAvoid othersPheromonesVisibles |
 	pheromoneToAvoid := self getMyHightPheromoneAround: anAnt.
@@ -303,6 +278,8 @@ MAWorker >> moveFromExplore: anAnt [
 { #category : #position }
 MAWorker >> moveFromRandom: anAnt [
 
+	"Random move for anAnt, this method is udes to test performance of the system (normally this method isn't used in the system)."
+
 	| newPos |
 	phase = #explore ifTrue: [ 
 		newPos := self randomMove: anAnt.
@@ -333,6 +310,8 @@ MAWorker >> moveFromRandom: anAnt [
 { #category : #position }
 MAWorker >> moveFromReturn: anAnt [
 
+	"This method is used by ants when they are returning to the ant hill. So it permit to get all pheromones around the ant and follow the track. If their is no pheromones around, the ant move randomly."
+
 	| newPos pheromonesVisibles |
 	pheromonesVisibles := self getPheromonesAround: anAnt.
 
@@ -358,7 +337,7 @@ MAWorker >> moveFromReturn: anAnt [
 { #category : #'instance creation' }
 MAWorker >> newPositionCheckBorder: aPoint [
 
-	"Check if the ant is in the ground. If not keep the ant on the ground."
+	"This method check if the ant is in the ground. If not, it keep the ant on the ground."
 
 	| newPos |
 	newPos := aPoint.
@@ -375,16 +354,23 @@ MAWorker >> newPositionCheckBorder: aPoint [
 { #category : #position }
 MAWorker >> randomMove: anAnt [
 
-	^ (anAnt position) + ((((Random new nextIntegerBetween: 0 and: 6)-3) rounded) @ (((Random new nextIntegerBetween: 0 and: 6)-3) rounded)). 
+	"This method return a random move."
+
+	^ anAnt position
+	  + (((Random new nextIntegerBetween: 0 and: 6) - 3) rounded
+		   @ ((Random new nextIntegerBetween: 0 and: 6) - 3) rounded)
 ]
 
 { #category : #position }
 MAWorker >> targetPheromones: aPheromoneOrderedCollection for: anAnt [
-	
+
+	"This method return a position that is actually a pheromone position. It's used to follow track."
+
 	| newPos randomPheromone |
-	
-	randomPheromone := Random new nextIntegerBetween: 1 and: aPheromoneOrderedCollection size .
+	randomPheromone := Random new
+		                   nextIntegerBetween: 1
+		                   and: aPheromoneOrderedCollection size.
 	newPos := aPheromoneOrderedCollection at: randomPheromone.
-	
-	^ newPos.
+
+	^ newPos
 ]

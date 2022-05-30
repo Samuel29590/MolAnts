@@ -5,8 +5,14 @@ Trait {
 	],
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
+
+{ #category : #services }
+TMAAntServices >> getRole [
+
+	
+]
 
 { #category : #services }
 TMAAntServices >> getRoleName [
@@ -14,6 +20,10 @@ TMAAntServices >> getRoleName [
 
 { #category : #services }
 TMAAntServices >> getStage [
+]
 
-	^ self getTMAStageServicesProvider 
+{ #category : #services }
+TMAAntServices >> getStageName [
+
+	
 ]

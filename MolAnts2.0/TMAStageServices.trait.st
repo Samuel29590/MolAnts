@@ -6,7 +6,7 @@ Trait {
 	],
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #role }
@@ -15,8 +15,12 @@ TMAStageServices >> doSimulationStepFor: anAnt [
 
 { #category : #role }
 TMAStageServices >> getRole [
+]
 
-	^ self getTMARoleServicesProvider 
+{ #category : #role }
+TMAStageServices >> getRoleName [
+
+	^ self getTMARoleServicesProvider getRoleName
 ]
 
 { #category : #role }

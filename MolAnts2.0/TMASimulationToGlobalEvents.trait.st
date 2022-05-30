@@ -2,7 +2,7 @@ Trait {
 	#name : #TMASimulationToGlobalEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'events - lifecycle' }
@@ -31,12 +31,6 @@ TMASimulationToGlobalEvents >> started [
 
 { #category : #'events - control' }
 TMASimulationToGlobalEvents >> stopped [
-
-	
-]
-
-{ #category : #'events - lifecycle' }
-TMASimulationToGlobalEvents >> workerEat: anAnt [
 
 	
 ]

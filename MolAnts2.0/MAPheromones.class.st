@@ -8,7 +8,7 @@ Class {
 		'pheromonesDict',
 		'pheromonesReturnDict'
 	],
-	#category : #'MolAnts-Model'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #accessing }
@@ -20,20 +20,24 @@ MAPheromones class >> maxIntensity [
 { #category : #'life cycle' }
 MAPheromones >> componentActivate [
 
+	"Activation of the MAPheromones component."
 	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
 
 { #category : #'life cycle' }
 MAPheromones >> componentInitialize [
-	"here write the code corresponding to component initialisation phase"
-	
+
+
+	"Initialization of the MAPheromones component."
 	maxIntensity := 100.
 	pheromonesDict := Dictionary new.
-	pheromonesReturnDict := Dictionary new.
+	pheromonesReturnDict := Dictionary new
 ]
 
 { #category : #'life cycle' }
 MAPheromones >> componentPassivate [
+
+	"Passivating the MAPheromones component."
 
 	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
@@ -41,26 +45,26 @@ MAPheromones >> componentPassivate [
 { #category : #'life cycle' }
 MAPheromones >> componentRemove [
 
+	"Removing the MAPheromones component."
+
 	pheromonesDict := nil.
-	pheromonesReturnDict := nil.
+	pheromonesReturnDict := nil
 ]
 
 { #category : #'events - lifecycle' }
 MAPheromones >> doSimulationStep [
 
+	"At each step, all pheromones loose 1 to their intensity. If a pheromone has 0 as intensity it's remove from the dictionaries."
+
 	pheromonesDict keysDo: [ :each | 
-		pheromonesDict at: each update: [ :v | v value: v value -1 ].
-		((pheromonesDict at: each) value) <= 0 ifTrue: [ 
-			pheromonesDict removeKey: each.
-		].
-	].
+		pheromonesDict at: each update: [ :v | v value: v value - 1 ].
+		(pheromonesDict at: each) value <= 0 ifTrue: [ 
+			pheromonesDict removeKey: each ] ].
 
 	pheromonesReturnDict keysDo: [ :each | 
-		pheromonesReturnDict at: each update: [ :v | v-1 ].
+		pheromonesReturnDict at: each update: [ :v | v - 1 ].
 		(pheromonesReturnDict at: each) <= 0 ifTrue: [ 
-			pheromonesReturnDict removeKey: each.
-		].
-	].
+			pheromonesReturnDict removeKey: each ] ]
 ]
 
 { #category : #services }
@@ -96,8 +100,10 @@ MAPheromones >> getTMASimulationToGlobalEventsSubscriber [
 { #category : #events }
 MAPheromones >> pheromoneNew: aPoint for: anAnt [
 
+	"Adding or updating a pheromone of exploration at a specific point."
+
 	(pheromonesDict includesKey: aPoint)
-		ifFalse: [ 
+		ifFalse: [ "The following code permit to not create pheromones in the ant hill. In order to keep the ant hill clear."
 			| pointRectangle antHillRectangle |
 			pointRectangle := BlBounds
 				                  origin: anAnt position - (20 @ 20)
@@ -107,7 +113,6 @@ MAPheromones >> pheromoneNew: aPoint for: anAnt [
 				                    origin:
 				                    MASimulationManager simulationAntHillPosition
 				                    extent: 0 @ 0.
-
 			(pointRectangle intersects: antHillRectangle) ifFalse: [ 
 				pheromonesDict add: aPoint -> (anAnt -> maxIntensity) ] ]
 		ifTrue: [ pheromonesDict at: aPoint put: anAnt -> maxIntensity ]
@@ -116,11 +121,12 @@ MAPheromones >> pheromoneNew: aPoint for: anAnt [
 { #category : #events }
 MAPheromones >> pheromoneReturnNew: aPoint for: anAnt [
 
-		(pheromonesReturnDict includesKey: aPoint) ifFalse:[
-			pheromonesReturnDict add: (aPoint -> maxIntensity).
-		] ifTrue: [
-			pheromonesReturnDict at: aPoint  update: [:v | v - v + maxIntensity].
-		].
-	
+	"Adding or updating a pheromone of return at a specific point."
 
+	(pheromonesReturnDict includesKey: aPoint)
+		ifFalse: [ pheromonesReturnDict add: aPoint -> maxIntensity ]
+		ifTrue: [ 
+			pheromonesReturnDict
+				at: aPoint
+				update: [ :v | v - v + maxIntensity ] ]
 ]

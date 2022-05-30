@@ -1,19 +1,19 @@
 Trait {
-	#name : #TMAPheromonesType,
+	#name : #TMAGroundType,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'accessing - events' }
-TMAPheromonesType classSide >> consumedComponentEvents [
+TMAGroundType classSide >> consumedComponentEvents [
 
 	<componentContract>
 	^ { TMASimulationToGlobalEvents }
 ]
 
 { #category : #'accessing - services' }
-TMAPheromonesType classSide >> providedComponentServices [
+TMAGroundType classSide >> usedComponentServices [
 	<componentContract>
-	^ {TMAPheromoneServices} 
+	^ {TMAPheromoneServices . TMASimulationServices}
 ]

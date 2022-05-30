@@ -8,11 +8,13 @@ Class {
 		'ageInMs',
 		'stage'
 	],
-	#category : #'MolAnts-Model'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'life cycle' }
 MAInsect >> componentActivate [
+
+	"Activation of the MAInsect component."
 
 	self getTMASimulationToGlobalEventsSubscriber subscribe: self
 ]
@@ -20,23 +22,30 @@ MAInsect >> componentActivate [
 { #category : #'life cycle' }
 MAInsect >> componentInitialize [
 
+	"Initialization of the MAInsect component."
+
 	ageInMs := 0.
-	stage := #alive.
+	stage := #alive
 ]
 
 { #category : #'life cycle' }
 MAInsect >> componentPassivate [
 
+
+	"Passivating the MAInsect component."
 	self getTMASimulationToGlobalEventsSubscriber unsubscribe: self
 ]
 
 { #category : #'life cycle' }
 MAInsect >> doSimulationStep [
 
-	stage = #alive ifTrue: [
+	"At each step an insect just move randomly, waiting to be eaten ..."
+	stage = #alive ifTrue: [ 
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
-		self position: (position + (((Random new next * 2 - 1) rounded) @ ((Random new next * 2 - 1) rounded))).  
-	].
+		self position: position
+			+
+			((Random new next * 2 - 1) rounded
+			 @ (Random new next * 2 - 1) rounded) ]
 ]
 
 { #category : #'component accessing' }

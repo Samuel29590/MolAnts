@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'MolComponentImpl + TMARoleType + TMARoleServices',
 	#classTraits : 'MolComponentImpl classTrait + TMARoleType classTrait + TMARoleServices classTrait',
-	#category : #'MolAnts-Model'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #accessing }

@@ -2,7 +2,7 @@ Trait {
 	#name : #TMAInsectsType,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'MolAnts-Molecule Contracts'
+	#category : #'MolAnts2.0'
 }
 
 { #category : #'accessing - events' }
