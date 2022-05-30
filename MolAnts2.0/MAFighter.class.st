@@ -1,7 +1,7 @@
 Class {
 	#name : #MAFighter,
 	#superclass : #MARole,
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #role }

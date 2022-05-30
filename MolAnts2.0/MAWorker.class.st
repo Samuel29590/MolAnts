@@ -5,7 +5,7 @@ Class {
 		'phase',
 		'oldPositions'
 	],
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #position }

@@ -2,7 +2,7 @@ Trait {
 	#name : #TMAPheromonesType,
 	#traits : 'MolComponentType',
 	#classTraits : 'MolComponentType classTrait',
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'accessing - events' }

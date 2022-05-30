@@ -1,7 +1,7 @@
 Class {
 	#name : #MAQueen,
 	#superclass : #MARole,
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'life cycle' }

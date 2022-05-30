@@ -2,7 +2,7 @@ Trait {
 	#name : #TMAInsectEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #events }

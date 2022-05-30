@@ -8,7 +8,7 @@ Class {
 		'ageInMs',
 		'stage'
 	],
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'life cycle' }

@@ -15,7 +15,7 @@ Class {
 		'pheromones',
 		'nbDelivered'
 	],
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'accessing - events' }

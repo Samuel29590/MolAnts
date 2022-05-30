@@ -14,7 +14,7 @@ Class {
 		'refreshing',
 		'nbDelivered'
 	],
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'life cycle' }

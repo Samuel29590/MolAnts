@@ -6,7 +6,7 @@ Trait {
 	],
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #role }

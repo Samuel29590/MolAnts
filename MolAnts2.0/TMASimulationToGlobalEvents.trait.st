@@ -2,7 +2,7 @@ Trait {
 	#name : #TMASimulationToGlobalEvents,
 	#traits : 'MolComponentEvents',
 	#classTraits : 'MolComponentEvents classTrait',
-	#category : #'MolAnts2.0'
+	#category : #MolAnts
 }
 
 { #category : #'events - lifecycle' }
