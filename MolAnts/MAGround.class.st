@@ -281,6 +281,16 @@ MAGround >> doSimulationStep [
 ]
 
 { #category : #drawing }
+MAGround >> drawOn: aCanvas at: aPoint radius: anInteger color: aColor opacity: aFloat [
+
+	aCanvas figure
+		path: (aCanvas shape circleAt: aPoint radius: anInteger);
+		background: aColor;
+		backgroundAlpha: aFloat;
+		draw
+]
+
+{ #category : #drawing }
 MAGround >> drawOnSpartaCanvas: aCanvas [
 
 	"Re writing this method here, in order to directly draw inside the canvas all the elements of the system. Tihs permit to keep good performances even if there is a lot of elements to draw."
@@ -294,55 +304,100 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 		background: Color white;
 		draw.
 
-	self getTMAPheromoneServicesProvider getPheromonesDict ifNotNil: [ 
-		self getTMAPheromoneServicesProvider getPheromonesDict 
-			keysAndValuesDo: [ :k :v | 
-				aCanvas figure
-					path: (aCanvas shape circleAt: k radius: 2);
-					background: Color blue;
-					backgroundAlpha:
-						v value / self getTMAPheromoneServicesProvider getMaxIntensity;
-					draw ] ].
+	(self getTMAPheromoneServicesProvider getPheromonesDict: (0 @ 0)) 
+		ifNotNil: [ 
+			(self getTMAPheromoneServicesProvider getPheromonesDict: (0 @ 0))
+				keysAndValuesDo: [ :k :v | 
+					self
+						drawOn: aCanvas
+						at: k
+						radius: 2
+						color: Color blue
+						opacity:
+						v value / self getTMAPheromoneServicesProvider getMaxIntensity ] ].
+				
+	(self getTMAPheromoneServicesProvider getPheromonesDict: (0 @  MASimulationManager simulationHeight)) 
+		ifNotNil: [ 
+			(self getTMAPheromoneServicesProvider getPheromonesDict: (0 @  MASimulationManager simulationHeight))
+				keysAndValuesDo: [ :k :v | 
+					self
+						drawOn: aCanvas
+						at: k
+						radius: 2
+						color: Color blue
+						opacity:
+						v value / self getTMAPheromoneServicesProvider getMaxIntensity ] ].
+				
+	(self getTMAPheromoneServicesProvider getPheromonesDict: (MASimulationManager simulationWidth  @ 0)) 
+		ifNotNil: [ 
+			(self getTMAPheromoneServicesProvider getPheromonesDict: (MASimulationManager simulationWidth  @ 0))
+				keysAndValuesDo: [ :k :v | 
+					self
+						drawOn: aCanvas
+						at: k
+						radius: 2
+						color: Color blue
+						opacity:
+						v value / self getTMAPheromoneServicesProvider getMaxIntensity ] ].
+
+	(self getTMAPheromoneServicesProvider getPheromonesDict:
+		 (MASimulationManager simulationWidth 
+		 @ MASimulationManager simulationHeight)) ifNotNil: [ 
+		(self getTMAPheromoneServicesProvider getPheromonesDict:
+			 (MASimulationManager simulationWidth
+			 @ MASimulationManager simulationHeight)) keysAndValuesDo: [ :k :v | 
+			self
+				drawOn: aCanvas
+				at: k
+				radius: 2
+				color: Color blue
+				opacity:
+				v value / self getTMAPheromoneServicesProvider getMaxIntensity ] ].
 
 	self getTMAPheromoneServicesProvider getPheromonesReturnDict 
 		ifNotNil: [ 
 			self getTMAPheromoneServicesProvider getPheromonesReturnDict 
 				keysAndValuesDo: [ :k :v | 
-					aCanvas figure
-						path: (aCanvas shape circleAt: k radius: 2);
-						background: Color cyan;
-						backgroundAlpha:
-							v / self getTMAPheromoneServicesProvider getMaxIntensity;
-						draw ] ].
+					self
+						drawOn: aCanvas
+						at: k
+						radius: 2
+						color: Color cyan
+						opacity:
+						v value / self getTMAPheromoneServicesProvider getMaxIntensity ] ].
 
 	self getInsects ifNotNil: [ 
 		self getInsects keysAndValuesDo: [ :k :v | 
-			aCanvas figure
-				path: (aCanvas shape circleAt: k radius: 2);
-				background: Color black;
-				backgroundAlpha: 1;
-				draw ] ].
+			self
+				drawOn: aCanvas
+				at: k
+				radius: 2
+				color: Color black
+				opacity: 1 ] ].
 
 	self getAnts ifNotNil: [ 
 		self getAnts do: [ :ant | 
 			ant getRoleName = #queen ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 5);
-					background: Color pink;
-					backgroundAlpha: 1;
-					draw ].
+				self
+					drawOn: aCanvas
+					at: ant position
+					radius: 5
+					color: Color pink
+					opacity: 1 ].
 			ant getRoleName = #worker ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 3);
-					background: Color orange;
-					backgroundAlpha: 1;
-					draw ].
+				self
+					drawOn: aCanvas
+					at: ant position
+					radius: 3
+					color: Color orange
+					opacity: 1 ].
 			ant getRoleName = #fighter ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 3);
-					background: Color green;
-					backgroundAlpha: 1;
-					draw ] ] ]
+				self
+					drawOn: aCanvas
+					at: ant position
+					radius: 3
+					color: Color green
+					opacity: 1 ] ] ]
 ]
 
 { #category : #services }
@@ -431,7 +486,7 @@ MAGround >> updateInfoPanel [
 	nbDelivered text:
 		self getTMASimulationServicesProvider getNbDelivered asRopedText.
 	nbPheromones text:
-		(self getTMAPheromoneServicesProvider getPheromonesDict size
+		(((self getTMAPheromoneServicesProvider getPheromonesDict: 0@0) size) + ((self getTMAPheromoneServicesProvider getPheromonesDict: MASimulationManager simulationWidth  @ MASimulationManager simulationHeight )size)+ ((self getTMAPheromoneServicesProvider getPheromonesDict: 0  @ MASimulationManager simulationHeight )size)+ ((self getTMAPheromoneServicesProvider getPheromonesDict: MASimulationManager simulationWidth  @ 0 )size)
 		 + self getTMAPheromoneServicesProvider getPheromonesReturnDict size)
 			asRopedText.
 

@@ -10,7 +10,7 @@ TMAPheromoneServices >> getMaxIntensity [
 ]
 
 { #category : #services }
-TMAPheromoneServices >> getPheromonesDict [
+TMAPheromoneServices >> getPheromonesDict: aPoint [
 ]
 
 { #category : #services }

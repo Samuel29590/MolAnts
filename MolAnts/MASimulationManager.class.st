@@ -224,11 +224,11 @@ MASimulationManager >> getNbDelivered [
 ]
 
 { #category : #services }
-MASimulationManager >> getPheromonesDict [
+MASimulationManager >> getPheromonesDict: aPoint [
 
 	"Returning a Dictionary of all pheromone of exploration in the system (key: position / value: (the ant that create it -> intensity))"
 
-	^ self getTMAPheromoneServicesProvider getPheromonesDict
+	^ self getTMAPheromoneServicesProvider getPheromonesDict: aPoint.
 ]
 
 { #category : #services }
@@ -394,7 +394,7 @@ MASimulationManager >> stageChanged: aSymbol for: anAnt [
 
 	"Removing an ant"
 
-	aSymbol = #dead ifTrue: [ ants remove: anAnt ]
+	aSymbol = #dead ifTrue: [ ants remove: anAnt. MAAnt stop: anAnt componentName]
 ]
 
 { #category : #services }

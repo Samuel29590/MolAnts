@@ -27,7 +27,7 @@ TMASimulationServices >> getNbDelivered [
 ]
 
 { #category : #services }
-TMASimulationServices >> getPheromonesDict [
+TMASimulationServices >> getPheromonesDict: aPoint [
 ]
 
 { #category : #services }
