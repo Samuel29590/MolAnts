@@ -56,15 +56,27 @@ This service is provided by the pheromone implementation and used by the ground 
 
 ### Ants
 
+The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created their is also one "MAStage" component and one "MARole" component created. Their are associate throught their name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant "MAAnt" permit to increase the age of the ant and to send to the stage the order to do the simluation step and to move.
+
 #### TMAAntServices
+
+This service is provided by the ant implementation and it's not used by another component. But it permit to describe methods that the ant implementation need to provides.
 
 ### Stages
 
+The actual implementation of the *TMAStageType*: *MAStage*, describe the stage of one ant. The stage manage the life cycle of an ant, it determine when an ant is an egg, an adult or when the ant is dead. It also send to the role the order to do the simulation step and to move.
+
 #### TMAStageServices
+
+This service is provided by the stage implementation and used by the ant implementation. It describe methods that the stage needs to implement because the ant implementation need this methods to work correctly.
 
 #### TMAStageEvents
 
+Stages provide this events that is consumed by the simulation manager. This event describe one method *stageChanged:for:* that aim to be implemented by the simulation manager to remove, from the orderedCollection "ants", ants that are dead.
+
 ### Roles
+
+
 
 #### TMARolesServices
 
