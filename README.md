@@ -68,7 +68,7 @@ The actual implementation of the *TMAStageType*: *MAStage*, describe the stage o
 
 #### TMAStageServices
 
-This service is provided by the stage implementation and used by the ant implementation. It describe methods that the stage needs to implement because the ant implementation need this methods to work correctly.
+This service is provided by the stage implementation and used by the ant implementation. It describe methods that the stage needs to implement because the ant implementation needs it to work correctly.
 
 #### TMAStageEvents
 
@@ -76,10 +76,16 @@ Stages provide this events that is consumed by the simulation manager. This even
 
 ### Roles
 
-
+The actual implementation of the *TMARoleeType*: *MARole*, describe the role of one stage. The role provides the behavior of an ant at each step. Actually roles are implemented by *MAQueen*, *MAFighter* or *MAWorker* that are subclass of *MARole*. In each different implementation there is one method: "doSimulationStepFor:" that manage the action of the ant and one method: "moveFrom:" that manage the position of the ant at each step.
 
 #### TMARolesServices
 
+This service is provided by the role implementation and used by the stage. It describe methods that the role needs to implement because the stage implementation needs it to work correctly.
+
 #### TMARolesEvents
 
+Roles provide this events that is consumed by the simulation manager. This event describe methods that aims to make the actions of the ants concrete in the system.
+
 ### Ground
+
+The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the view of the system. It permit to drow all the entities of the system on a canvas and to keep the information panel up to date. It also permit to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
