@@ -30,7 +30,7 @@ This event is consumed by all the entities of the simulation: ground, ants, inse
 
 This events also provides two messages: *pheromoneNew:for:* and *pheromoneReturnNew:for*, that needs to be implemented by the pheromone component. This two messages notify the Pheromone component of a pheromone creation or update.
 
-#### TMASimulationServices
+##### TMASimulationServices
 
 This service is used by the ground and the ants. It describe methods, that the simulation need to implement. Some of this methods permit to get information about the simulation. As all alive ants instances, insects positions, and all pheromones positions and informations about them. This information are used in the different implementations of ants to do consistent actions and in the ground to draw entities.
 
@@ -40,7 +40,7 @@ This service also describe two methods that the simulation need to implement: st
 
 The actual implementation of the *TMAInsectsType*: *MAInsect*, describe one insect. It means that if they are 50 insects on the simulation, their is also 50 instances of *MAInsects*. This implementation is very simple, insect only move on the ground randomly (waiting to be eaten...) at each step of the simulation.
 
-#### TMAInsectEvents
+##### TMAInsectEvents
 
 Insects provide this events that is consumed by the simulation manager. This event describe one method *positionChnagedFor:oldPos:newPos:* that aim to be implemented by the simulation manager to keep the dictionary of insect positions up to date.
 
@@ -50,7 +50,7 @@ The actual implementation of the *TMAPheromonesType*: *MAPheromones*, manage all
 
 Pheromones are created by ants whe they are moving on the ground and if an ant move on a position where a pheromone already exists the pheromone is only update (intensity set to maximum). And at each step of the simulation each pheromone intensity is decreased by one.
 
-#### TMAPheromoneServices
+##### TMAPheromoneServices
 
 This service is provided by the pheromone implementation and used by the ground and the simulation manager. It provide two methods to retrieve the pheromones dictionaries. This aim to draw pheromones on the canvas and to detect if an ant is around pheromones.
 
@@ -58,7 +58,7 @@ This service is provided by the pheromone implementation and used by the ground 
 
 The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created their is also one "MAStage" component and one "MARole" component created. Their are associate throught their name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant "MAAnt" permit to increase the age of the ant and to send to the stage the order to do the simluation step and to move.
 
-#### TMAAntServices
+##### TMAAntServices
 
 This service is provided by the ant implementation and it's not used by another component. But it permit to describe methods that the ant implementation need to provides.
 
@@ -66,11 +66,11 @@ This service is provided by the ant implementation and it's not used by another 
 
 The actual implementation of the *TMAStageType*: *MAStage*, describe the stage of one ant. The stage manage the life cycle of an ant, it determine when an ant is an egg, an adult or when the ant is dead. It also send to the role the order to do the simulation step and to move.
 
-#### TMAStageServices
+##### TMAStageServices
 
 This service is provided by the stage implementation and used by the ant implementation. It describe methods that the stage needs to implement because the ant implementation needs it to work correctly.
 
-#### TMAStageEvents
+##### TMAStageEvents
 
 Stages provide this events that is consumed by the simulation manager. This event describe one method *stageChanged:for:* that aim to be implemented by the simulation manager to remove, from the orderedCollection "ants", ants that are dead.
 
@@ -78,11 +78,11 @@ Stages provide this events that is consumed by the simulation manager. This even
 
 The actual implementation of the *TMARoleeType*: *MARole*, describe the role of one stage. The role provides the behavior of an ant at each step. Actually roles are implemented by *MAQueen*, *MAFighter* or *MAWorker* that are subclass of *MARole*. In each different implementation there is one method: "doSimulationStepFor:" that manage the action of the ant and one method: "moveFrom:" that manage the position of the ant at each step.
 
-#### TMARolesServices
+##### TMARolesServices
 
 This service is provided by the role implementation and used by the stage. It describe methods that the role needs to implement because the stage implementation needs it to work correctly.
 
-#### TMARolesEvents
+##### TMARolesEvents
 
 Roles provide this events that is consumed by the simulation manager. This event describe methods that aims to make the actions of the ants concrete in the system.
 
