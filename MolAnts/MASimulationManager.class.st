@@ -125,6 +125,7 @@ MASimulationManager >> componentPassivate [
 	"Passivating the MASimulationManager component."
 
 	super componentPassivate.
+	
 	self getTMAStageEventsSubscriber unsubscribe: self.
 	self getTMARoleEventsSubscriber unsubscribe: self.
 	self getTMAInsectEventsSubscriber unsubscribe: self.
