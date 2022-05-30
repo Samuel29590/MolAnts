@@ -22,7 +22,13 @@ MolAnts require ![Molecule](https://github.com/OpenSmock/Molecule) for the compo
 
 ### Simulation
 
-The actual implementation of the *TMASimulationManagerType*: *MASimulationManager*, describe the manager of the MolAnts's system. It aims to put in relation every entity of the system. It also provides accessing methods of all the entities of the system for the view implementation. The simulation manager reference all the entities of the system in ordered collections or dictionaries and can access to all the entities and send them message. This feature permits to do concrete actions.
+The actual implementation of the *TMASimulationManagerType*: *MASimulationManager*, describe the manager of the MolAnts's system. It aims to put in relation every entity of the system. The simulation manager reference all the entities of the system in ordered collections or dictionaries and can access to all the entities and send them events. This feature permits to do concrete actions as interaction between ants and insects or ants and pheromones.
+
+Futhermore, the simulation manager contains the main loop of the system. This loop send the *simulationStepSend* event message to each entity at each turn.
+
+The simulation manager also implement methods to manage ants and insects (create, update and remove).
+
+Finally this implementation provides *start / pause / play / stop* methods on the class side. Also on the side class the simulation manager provides the simulation data as step duration, width and height of the ground, and ant hill position.
 
 ##### TMASimulationToGlobalEvents
 
@@ -32,9 +38,9 @@ This event also provides two messages: *pheromoneNew:for:* and *pheromoneReturnN
 
 ##### TMASimulationServices
 
-This service is used by the ground and the ants. It describes methods that the simulation need to implement. Some of these methods permit to get information about the simulation. As all alive ants, insects positions, and all pheromones positions and variables about them. These variables are used in the different implementations of ants to do consistent actions and in the ground to draw entities.
+This service is used by the ground and the ants. It describes methods that the simulation need to implement. Some of these methods permit to get information about the simulation. As all alive ants, insects positions and all pheromones positions and data. These data are used in the different implementations of ants to do consistent actions and in the ground to draw entities.
 
-This service also describe two methods that the simulation need to implement: *start/stop*. And a variable: *isRunning* that the simulation implementation needs to keep up to date.
+This service also describe two methods that the simulation need to implement: *start/stop*. And a variable: *isRunning* that the simulation implementation needs to keep up-to-date.
 
 ### Insects
 
@@ -46,7 +52,7 @@ Insects provide this event that is consumed by the simulation manager. This even
 
 ### Pheromones
 
-The actual implementation of the *TMAPheromonesType*: *MAPheromones*, manage all the pheromones of the simulation. Pheromones are stored in two dictionaries, one for exploration pheromones and one for returning pheromones. Dictionaries has for key: the position and for value: an association: (an Ant -> an Integer). In this association the ant represent the last ant that visits the pheromone and the integer represent the intensity of the pheromone.
+The actual implementation of the *TMAPheromonesType*: *MAPheromones*, manage all the pheromones of the simulation. Pheromones are stored in two dictionaries, one for exploration's pheromones and one for returning's pheromones. Dictionaries has for key: the position and for value: an association: (an Ant -> an Integer). In this association the ant represent the last ant that visits the pheromone and the integer represent the intensity of the pheromone.
 
 Pheromones are created by ants when they are moving on the ground and if an ant moves on a position where a pheromone already exists the pheromone is only update (intensity set to maximum). And at each step of the simulation each pheromone intensity is decreased by one.
 
@@ -56,11 +62,11 @@ This service is provided by the pheromone implementation and used by the ground 
 
 ### Ants
 
-The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created there is also one *MAStage* component and one *MARole* component created. There are associate through their name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant *MAAnt* permit to increase the age of the ant and to send to the stage the order to do the simulation step and to move.
+The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created there is also one *MAStage* component and one *MARole* component created. There are associate through their component name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant *MAAnt* permit to increase the age of the ant and to send to the stage the order to do the simulation step and to move.
 
 ##### TMAAntServices
 
-This service is provided by the ant implementation and it's not used by another component. However, it permits to describe methods that the ant implementation need to provide.
+This service is provided by the ant implementation isn't used by another component. However, it permits to describe methods that the ant implementation need to provide.
 
 ### Stages
 
@@ -88,4 +94,4 @@ Roles provide this event that is consumed by the simulation manager. This event 
 
 ### Ground
 
-The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the view of the system. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
+The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the system's view. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
