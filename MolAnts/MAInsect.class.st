@@ -1,3 +1,12 @@
+"
+The actual implementation of the TMAInsectsType: MAInsect, describe one insect. It means that if there are 50 insects on the simulation, there are also 50 instances of MAInsects. This implementation is very simple, insect only move on the ground randomly (waiting to be eaten...) at each step of the simulation.
+
+Variables :
+
+-position, is a point.
+
+-ageInMs, is an integer.
+"
 Class {
 	#name : #MAInsect,
 	#superclass : #Object,
@@ -5,8 +14,7 @@ Class {
 	#classTraits : 'MolComponentImpl classTrait + TMAInsectsType classTrait + TMASimulationToGlobalEvents classTrait',
 	#instVars : [
 		'position',
-		'ageInMs',
-		'stage'
+		'ageInMs'
 	],
 	#category : #MolAnts
 }
@@ -25,7 +33,6 @@ MAInsect >> componentInitialize [
 	"Initialization of the MAInsect component."
 
 	ageInMs := 0.
-	stage := #alive
 ]
 
 { #category : #'life cycle' }
@@ -40,12 +47,12 @@ MAInsect >> componentPassivate [
 MAInsect >> doSimulationStep [
 
 	"At each step an insect just move randomly, waiting to be eaten ..."
-	stage = #alive ifTrue: [ 
+
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
 		self position: position
 			+
 			((Random new next * 2 - 1) rounded
-			 @ (Random new next * 2 - 1) rounded) ]
+			 @ (Random new next * 2 - 1) rounded) 
 ]
 
 { #category : #'component accessing' }

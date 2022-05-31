@@ -1,8 +1,17 @@
+"
+This service is provided by the stage implementation and used by the ant implementation. It describes methods that the stage needs to implement because the ant implementation needs it to work correctly.
+
+Variables :
+
+-stageName, is an symbol used to know the actual stage of the ant: egg or adult.
+
+-role, containing the role associate to the stage. It is used to access to the correct role to do actions and to stop the role component correctly.
+"
 Trait {
 	#name : #TMAStageServices,
 	#instVars : [
-		'role',
-		'stageName'
+		'stageName',
+		'role'
 	],
 	#traits : 'MolComponentServices',
 	#classTraits : 'MolComponentServices classTrait',
@@ -25,8 +34,6 @@ TMAStageServices >> getRoleName [
 
 { #category : #role }
 TMAStageServices >> getStageName [
-
-	^stageName ifNil: [ stageName := #egg ].
 ]
 
 { #category : #testing }

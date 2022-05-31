@@ -1,3 +1,12 @@
+"
+The actual implementation of the TMAAntsType: MAAnt, describe one ant. For each ant created there is also one MAStage component and one MARole component created. There are associate through their component name (example: Ant29, StageAnt29 and RoleStageAnt29). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant MAAnt permit to increase the age of the ant and to send to the stage the order to do the simulation step and to move.
+
+Variables :
+
+-position, is a point.
+
+-ageInMs, is an integer.
+"
 Class {
 	#name : #MAAnt,
 	#superclass : #Object,
@@ -47,12 +56,12 @@ MAAnt >> componentPassivate [
 
 { #category : #'life cycle' }
 MAAnt >> componentRemove [
+
 	"Removing the MAAnt component."
 
 	self removeStage.
 	position := nil.
 	ageInMs := nil.
-	stage := nil
 ]
 
 { #category : #private }
@@ -60,10 +69,10 @@ MAAnt >> doSimulationStep [
 
 	"Updating the age of the ant, then performing the action and the move of the ant."
 
-	self getStage isAlive ifTrue: [ 
+	self getTMAStageServicesProvider isAlive ifTrue: [ 
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
-		self getStage doSimulationStepFor: self.
-		self position: (self getStage moveFrom: self) ]
+		self getTMAStageServicesProvider doSimulationStepFor: self.
+		self position: (self getTMAStageServicesProvider moveFrom: self) ]
 ]
 
 { #category : #services }
@@ -89,7 +98,7 @@ MAAnt >> getRole [
 { #category : #accessing }
 MAAnt >> getRoleName [
 
-	^ self getTMAStageServicesProvider getRoleName.
+	^ stage getRoleName
 ]
 
 { #category : #services }
@@ -103,7 +112,7 @@ MAAnt >> getStage [
 { #category : #accessing }
 MAAnt >> getStageName [
 
-	^ self getTMAStageServicesProvider getStageName.
+	^ stage getStageName
 ]
 
 { #category : #'component accessing' }
@@ -145,7 +154,7 @@ MAAnt >> getTMAStageServicesProvider [
 { #category : #stage }
 MAAnt >> initializeStage [
 
-	stage := MAStage start: (#stage, self componentName asSymbol) asSymbol
+	stage := MAStage start: (#stage , self componentName asSymbol) asSymbol
 ]
 
 { #category : #accessing }
@@ -163,5 +172,6 @@ MAAnt >> position: aPoint [
 { #category : #stage }
 MAAnt >> removeStage [
 
-	MAStage stop: (#stage, self componentName asSymbol) asSymbol
+	MAStage stop: (#stage , self componentName asSymbol) asSymbol.
+	stage := nil
 ]

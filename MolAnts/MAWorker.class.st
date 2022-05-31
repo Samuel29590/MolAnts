@@ -1,3 +1,12 @@
+"
+I'm the actual implementation of the worker role.
+
+MAWorker variables :
+
+-phase, is a symbol to represent the actual phase of the ant: explore of return.
+
+-oldPositions, is and ordered collection of 5 points used by the worker role do not move on the last 5 position the worker already visit.
+"
 Class {
 	#name : #MAWorker,
 	#superclass : #MARole,
@@ -185,9 +194,6 @@ MAWorker >> getOthersPheromonesAround: anAnt [
 					(anAnt getPheromonesDict at: each) key componentName
 					= anAnt componentName ifFalse: [ 
 						othersPheromonesVisibles add: each ] ] ] ] ].
-
-
-
 	^ othersPheromonesVisibles
 ]
 

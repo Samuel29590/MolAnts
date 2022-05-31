@@ -1,3 +1,6 @@
+"
+I'm the role type trait.
+"
 Trait {
 	#name : #TMARoleType,
 	#traits : 'MolComponentType',

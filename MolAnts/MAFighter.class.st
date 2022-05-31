@@ -1,3 +1,6 @@
+"
+I'm the actual implementation of the fighter role.
+"
 Class {
 	#name : #MAFighter,
 	#superclass : #MARole,

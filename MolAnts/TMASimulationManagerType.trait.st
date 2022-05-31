@@ -1,3 +1,6 @@
+"
+I'm the simulation manager type trait.
+"
 Trait {
 	#name : #TMASimulationManagerType,
 	#traits : 'MolComponentType',

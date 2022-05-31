@@ -1,3 +1,6 @@
+"
+I'm the ant type trait.
+"
 Trait {
 	#name : #TMAAntsType,
 	#traits : 'MolComponentType',

@@ -1,3 +1,6 @@
+"
+I'm the ground type trait.
+"
 Trait {
 	#name : #TMAGroundType,
 	#traits : 'MolComponentType',

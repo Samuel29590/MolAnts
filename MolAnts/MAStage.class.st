@@ -1,3 +1,12 @@
+"
+The actual implementation of the TMAStageType: MAStage, describe the stage of one ant. The stage manages the life cycle of an ant, it determines when an ant is an egg, an adult or when the ant is dead. It also sends to the role the order to do the simulation step and to move.
+
+Variables :
+
+-eggStateDurationInMs, is an integer to determine the duration in ms of the egg state of the ant.
+
+-adultStateDurationInMs, is an integer to determine the duration in ms of the adult state of the ant.
+"
 Class {
 	#name : #MAStage,
 	#superclass : #Object,
@@ -28,8 +37,8 @@ MAStage >> componentRemove [
 	self removeRole.
 	eggStateDurationInMs := nil.
 	adultStateDurationInMs := nil.
-	role := nil.
-	stageName := nil
+	stageName := nil.
+	role := nil
 ]
 
 { #category : #private }
@@ -65,13 +74,19 @@ MAStage >> doSimulationStepFor: anAnt [
 { #category : #role }
 MAStage >> getRole [
 
-	^ role.
+	^ role
 ]
 
 { #category : #role }
 MAStage >> getRoleName [
 
-	^ role getRoleName.
+	^ role getRoleName
+]
+
+{ #category : #role }
+MAStage >> getStageName [
+
+	^ stageName ifNil: [ stageName := #egg ].
 ]
 
 { #category : #'component accessing' }
@@ -99,22 +114,18 @@ MAStage >> initializeRole [
 	| x |
 	"The first ant is always a queen."
 	componentName = #stageAnt1 ifTrue: [ 
-		role := MAQueen start:
-			        (#role , self componentName asSymbol) asSymbol.
+		role := MAQueen start: (#role , self componentName asSymbol) asSymbol.
 		^ self ].
 
 	x := Random new nextIntegerBetween: 1 and: 100.
 	x = 1 ifTrue: [ 
-		role := MAQueen start:
-			        (#role , self componentName asSymbol) asSymbol.
+		role := MAQueen start: (#role , self componentName asSymbol) asSymbol.
 		^ self ].
 	x < 26 ifTrue: [ 
-		role := MAFighter start:
-			        (#role , self componentName asSymbol) asSymbol.
+		role := MAFighter start: (#role , self componentName asSymbol) asSymbol.
 		^ self ].
 	x <= 100 ifTrue: [ 
-		role := MAWorker start:
-			        (#role , self componentName asSymbol) asSymbol.
+		role := MAWorker start: (#role , self componentName asSymbol) asSymbol.
 		^ self ]
 ]
 
@@ -138,5 +149,5 @@ MAStage >> removeRole [
 	"Deleting the role associate to the stage."
 
 	role ifNotNil: [ 
-		role class stop: (#role , self componentName asSymbol) asSymbol ]
+		role class stop: (#role , self componentName asSymbol) asSymbol. role := nil. ]
 ]

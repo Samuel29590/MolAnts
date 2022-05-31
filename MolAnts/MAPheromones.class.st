@@ -1,3 +1,16 @@
+"
+The actual implementation of the TMAPheromonesType: MAPheromones, manage all the pheromones of the simulation. Pheromones are stored in two dictionaries, one for exploration's pheromones and one for returning's pheromones. Dictionaries has for key: the position and for value: an association: (an Ant -> an Integer). In this association the ant represent the last ant that visits the pheromone and the integer represent the intensity of the pheromone.
+
+Pheromones are created by ants when they are moving on the ground and if an ant moves on a position where a pheromone already exists the pheromone is only update (intensity set to maximum). And at each step of the simulation each pheromone intensity is decreased by one.
+
+Variables :
+
+-maxIntensity, is an integer representing the intensity maximum of the pheromone.
+
+-pheromonesDict, is a dictionary containing every pheromones of exploration. Key: a point. Value: an association (ant->intensity).
+
+-pheromonesReturnDict, is a dictionary containing every pheromones of return. Key: a point. Value: an association (ant->intensity).
+"
 Class {
 	#name : #MAPheromones,
 	#superclass : #Object,

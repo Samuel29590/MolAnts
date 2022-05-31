@@ -1,3 +1,24 @@
+"
+The actual implementation of the TMAGroundType: MAGround is the implementation of the system's view. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
+
+Variables :
+
+-mySpace, containing the BlSpace object.
+
+-refreshing, is an integer used to know the actual refresh rate of the view.
+
+-stepView, is a BlTextElement used to print the actual step on the view.
+
+-nbInsectsView, is a BlTextElement used to print the actual number of insects on the view.
+
+-nbDeliveredView, is a BlTextElement used to print the actual number of insects delivered on the view.
+
+-nbPheromonesView, is a BlTextElement used to print the actual number of pheromones on the view.
+
+-nbEggsView, is a BlTextElement used to print the actual number of eggs on the view.
+
+-nbAntView, is a BlTextElement used to print the actual number of ants on the view.
+"
 Class {
 	#name : #MAGround,
 	#superclass : #BlElement,
@@ -5,14 +26,13 @@ Class {
 	#classTraits : 'MolComponentImpl classTrait + TMAGroundType classTrait + TMASimulationToGlobalEvents classTrait',
 	#instVars : [
 		'mySpace',
-		'compt',
-		'nbInsects',
-		'nbPheromones',
-		'nbEggs',
-		'nbAnts',
-		'time',
 		'refreshing',
-		'nbDelivered'
+		'stepView',
+		'nbInsectsView',
+		'nbDeliveredView',
+		'nbPheromonesView',
+		'nbEggsView',
+		'nbAntsView'
 	],
 	#category : #MolAnts
 }
@@ -29,7 +49,6 @@ MAGround >> componentInitialize [
 
 	"Initialization of the MAGround component."
 
-	compt := 0.
 	refreshing := 5.
 	mySpace := self openInNewSpace extent:
 		           MASimulationManager simulationWidth
@@ -51,7 +70,6 @@ MAGround >> componentRemove [
 
 	"Removing the MAGround component."
 
-	compt := 0.
 	self stopped.
 	mySpace ifNotNil: [ mySpace close ]
 ]
@@ -115,7 +133,7 @@ MAGround >> createInfoPanel [
 				 button isVisible ifTrue: [ MASimulationManager stopSimulation ].
 				 anEvent consumed: true ]).
 	infoPanel addChild: button.
-	
+
 	"Adding the text for refreshing."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 @ 55;
@@ -201,47 +219,47 @@ MAGround >> createInfoPanel [
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 @ 80;
 			  background: Color transparent) text: 'Step :' asRopedText).
-	time := BlTextElement new
+	stepView := BlTextElement new
 		        relocate: MASimulationManager simulationWidth / 10 @ 100;
 		        background: Color transparent;
 		        text: '000' asRopedText.
-	infoPanel addChild: time.
+	infoPanel addChild: stepView.
 
 	"Ajout du nombre de proies à l'interface."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 @ 130;
 			  background: Color transparent) text:
 			 'Number of insects :' asRopedText).
-	nbInsects := BlTextElement new
+	nbInsectsView := BlTextElement new
 		             relocate:
 			             MASimulationManager simulationWidth / 10 @ 150;
 		             background: Color transparent;
 		             text: '000' asRopedText.
-	infoPanel addChild: nbInsects.
+	infoPanel addChild: nbInsectsView.
 
 	"Ajout du nombre de proies ramenées à l'interface."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 @ 180;
 			  background: Color transparent) text:
 			 'Number of insects delivered :' asRopedText).
-	nbDelivered := BlTextElement new
+	nbDeliveredView := BlTextElement new
 		               relocate:
 			               MASimulationManager simulationWidth / 10 @ 200;
 		               background: Color transparent;
 		               text: '000' asRopedText.
-	infoPanel addChild: nbDelivered.
+	infoPanel addChild: nbDeliveredView.
 
 	"Ajout du nombre de pheromones à l'interface."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 * 5 @ 130;
 			  background: Color transparent) text:
 			 'Nunber of pheromones :' asRopedText).
-	nbPheromones := BlTextElement new
+	nbPheromonesView := BlTextElement new
 		                relocate:
 			                MASimulationManager simulationWidth / 10 * 5 @ 150;
 		                background: Color transparent;
 		                text: '000' asRopedText.
-	infoPanel addChild: nbPheromones.
+	infoPanel addChild: nbPheromonesView.
 
 	"Ajout du nombre de fourmis à l'interface."
 	infoPanel addChild: ((BlTextElement new
@@ -252,23 +270,23 @@ MAGround >> createInfoPanel [
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 * 5 @ 100;
 			  background: Color transparent) text: 'Eggs : ' asRopedText).
-	nbEggs := BlTextElement new
+	nbEggsView := BlTextElement new
 		          relocate:
 			          MASimulationManager simulationWidth / 10 * 5 + 55 @ 100;
 		          background: Color transparent;
 		          text: '000' asRopedText.
-	infoPanel addChild: nbEggs.
+	infoPanel addChild: nbEggsView.
 
 	infoPanel addChild: ((BlTextElement new
 			  relocate:
 				  MASimulationManager simulationWidth / 10 * 5 + 100 @ 100;
 			  background: Color transparent) text: 'Adults : ' asRopedText).
-	nbAnts := BlTextElement new
+	nbAntsView := BlTextElement new
 		          relocate:
 			          MASimulationManager simulationWidth / 10 * 5 + 165 @ 100;
 		          background: Color transparent;
 		          text: '000' asRopedText.
-	infoPanel addChild: nbAnts
+	infoPanel addChild: nbAntsView
 ]
 
 { #category : #events }
@@ -276,7 +294,8 @@ MAGround >> doSimulationStep [
 
 	"Incrementing the number of step, then refreshing the view if it's necessary."
 
-	compt := compt + 1.
+	| compt |
+	compt := self getTMASimulationServicesProvider getStep.
 	compt % refreshing = 0 ifTrue: [ self updateInfoPanel ]
 ]
 
@@ -325,24 +344,32 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 
 	self getAnts ifNotNil: [ 
 		self getAnts do: [ :ant | 
-			ant getRoleName = #queen ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 5);
-					background: Color pink;
-					backgroundAlpha: 1;
-					draw ].
-			ant getRoleName = #worker ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 3);
-					background: Color orange;
-					backgroundAlpha: 1;
-					draw ].
-			ant getRoleName = #fighter ifTrue: [ 
-				aCanvas figure
-					path: (aCanvas shape circleAt: ant position radius: 3);
-					background: Color green;
-					backgroundAlpha: 1;
-					draw ] ] ]
+			ant getStageName ~= #egg
+				ifTrue: [ 
+					ant getRoleName = #queen ifTrue: [ 
+						aCanvas figure
+							path: (aCanvas shape circleAt: ant position radius: 5);
+							background: Color pink;
+							backgroundAlpha: 1;
+							draw ].
+					ant getRoleName = #worker ifTrue: [ 
+						aCanvas figure
+							path: (aCanvas shape circleAt: ant position radius: 3);
+							background: Color orange;
+							backgroundAlpha: 1;
+							draw ].
+					ant getRoleName = #fighter ifTrue: [ 
+						aCanvas figure
+							path: (aCanvas shape circleAt: ant position radius: 3);
+							background: Color green;
+							backgroundAlpha: 1;
+							draw ] ]
+				ifFalse: [ 
+					aCanvas figure
+						path: (aCanvas shape circleAt: ant position radius: 2);
+						background: Color gray;
+						backgroundAlpha: 1;
+						draw ] ] ]
 ]
 
 { #category : #services }
@@ -426,11 +453,11 @@ MAGround >> updateInfoPanel [
 	"Modify each elements of the info panel. It permit to keep the view up to date with the simulation."
 
 	| eggs |
-	time text: compt asRopedText.
-	nbInsects text: self getInsects size asRopedText.
-	nbDelivered text:
+	stepView text: (self getTMASimulationServicesProvider getStep) asRopedText.
+	nbInsectsView text: self getInsects size asRopedText.
+	nbDeliveredView text:
 		self getTMASimulationServicesProvider getNbDelivered asRopedText.
-	nbPheromones text:
+	nbPheromonesView text:
 		(self getTMAPheromoneServicesProvider getPheromonesDict size
 		 + self getTMAPheromoneServicesProvider getPheromonesReturnDict size)
 			asRopedText.
@@ -438,6 +465,6 @@ MAGround >> updateInfoPanel [
 	eggs := 0.
 	self getAnts do: [ :ant | 
 		ant getStageName = #egg ifTrue: [ eggs := eggs + 1 ] ].
-	nbEggs text: eggs asRopedText.
-	nbAnts text: (self getAnts size - eggs) asRopedText
+	nbEggsView text: eggs asRopedText.
+	nbAntsView text: (self getAnts size - eggs) asRopedText
 ]
