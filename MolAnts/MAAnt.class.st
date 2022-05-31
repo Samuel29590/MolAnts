@@ -69,10 +69,10 @@ MAAnt >> doSimulationStep [
 
 	"Updating the age of the ant, then performing the action and the move of the ant."
 
-	self getTMAStageServicesProvider isAlive ifTrue: [ 
+	self getStage isAlive ifTrue: [ 
 		ageInMs := ageInMs + MASimulationManager simulationStepDurationInMs.
-		self getTMAStageServicesProvider doSimulationStepFor: self.
-		self position: (self getTMAStageServicesProvider moveFrom: self) ]
+		self getStage doSimulationStepFor: self.
+		self position: (self getStage moveFrom: self) ]
 ]
 
 { #category : #services }
