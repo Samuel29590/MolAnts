@@ -173,7 +173,7 @@ The actual implementation of the *TMAGroundType*: *MAGround* is the implementati
  
  -*nbInsectsView*, is a *BlTextElement* used to print the actual number of insects on the view.
  
- -*nbDeliveredView*, is a *BlTextElement* used to print the actual number of delivered on the view.
+ -*nbDeliveredView*, is a *BlTextElement* used to print the actual number of insects delivered on the view.
  
   -*nbPheromonesView*, is a *BlTextElement* used to print the actual number of pheromones on the view.
  
