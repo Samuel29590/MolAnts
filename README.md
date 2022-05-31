@@ -31,22 +31,20 @@ The simulation manager also implement methods to manage ants and insects (create
 Finally this implementation provides *start / pause / play / stop* methods on the class side. Also on the side class the simulation manager provides the simulation data as step duration, width and height of the ground, and ant hill position.
 
 ***Variables :***
-
- -*isFirstStep*
  
- -*simulationThread*
+ -*simulationThread*, containing the thread that sends at every step the event: * simulationStepSend*.
  
- -*step*
+ -*step*, is an integer that count the number of step.
  
- -*isAntHillCreated*
+ -*isAntHillCreated*, is a Boolean that is put to true at the creation of the first ant and put to false when ants are removed.
  
- -*ants*
+ -*ants*, is an ordered collection of ants. It contains all ants of the system. It is used to draw them on the ground and update the info panel.
  
- -*nbAnt*
+ -*nbAnt*, is an integer incremented at each ant creation. It is used to set the name of each ant component instance.
  
- -*insectsPos*
+ -*insectsPos*, is a dictionary containing all the insects of the simulation and their position. Key: a point. Value: an ordered collection of insects.
  
- -*nbDelivered*
+ -*nbDelivered*, is an integer that count the number of insect delivered to the anthill.
 
 ##### TMASimulationToGlobalEvents
 
@@ -60,17 +58,19 @@ This service is used by the ground and the ants. It describes methods that the s
 
 This service also describe two methods that the simulation need to implement: *start/stop*. And a variable: *isRunning* that the simulation implementation needs to keep up-to-date.
 
+***Variables :***
+ 
+ -*isRunning*, is a Boolean that is set to true when the simulation is playing and set to false when it is paused or stopped.
+
 ## Insects
 
 The actual implementation of the *TMAInsectsType*: *MAInsect*, describe one insect. It means that if there are 50 insects on the simulation, there are also 50 instances of *MAInsects*. This implementation is very simple, insect only move on the ground randomly (waiting to be eaten...) at each step of the simulation.
 
 ***Variables :***
 
- -*position*
+ -*position*, is a point.
  
- -*ageInMs*
- 
- -*stage*
+ -*ageInMs*, is an integer.
  
 ##### TMAInsectEvents
 
@@ -84,11 +84,11 @@ Pheromones are created by ants when they are moving on the ground and if an ant 
 
 ***Variables :***
 
- -*maxIntensity*
+ -*maxIntensity*, is an integer representing the intensity maximum of the pheromone.
  
- -*pheromonesDict*
+ -*pheromonesDict*, is a dictionary containing every pheromones of exploration. Key: a point. Value: an association (ant->intensity).
  
- -*pheromonesReturnDict*
+ -*pheromonesReturnDict*, is a dictionary containing every pheromones of return. Key: a point. Value: an association (ant->intensity).
  
 ##### TMAPheromoneServices
 
@@ -100,13 +100,17 @@ The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For e
 
 ***Variables :***
 
- -*position*
+ -*position*, is a point.
  
- -*ageInMs*
+ -*ageInMs*, is an integer.
  
 ##### TMAAntServices
 
 This service is provided by the ant implementation isn't used by another component. However, it permits to describe methods that the ant implementation need to provide.
+
+***Variables :***
+
+ -*stage*, containing the stage associate to the ant. It is used to access to the correct stage and do actions.
 
 ## Stages
 
@@ -114,13 +118,19 @@ The actual implementation of the *TMAStageType*: *MAStage*, describe the stage o
 
 ***Variables :***
 
- -*eggStateDurationInMs*
+ -*eggStateDurationInMs*, is an integer to determine the duration in ms of the egg state of the ant.
  
- -*adultStateDurationInMs*
+ -*adultStateDurationInMs*, is an integer to determine the duration in ms of the adult state of the ant.
  
 ##### TMAStageServices
 
 This service is provided by the stage implementation and used by the ant implementation. It describes methods that the stage needs to implement because the ant implementation needs it to work correctly.
+
+***Variables :***
+
+ -*stageName*, is an symbol used to know the actual stage of the ant: *egg* or *adult*.
+ 
+ -*role*, containing the role associate to the stage. It is used to access to the correct role to do actions and to stop the role component correctly.
 
 ##### TMAStageEvents
 
@@ -130,9 +140,19 @@ Stages provide this event that is consumed by the simulation manager. This event
 
 The actual implementation of the *TMARoleeType*: *MARole*, describe the role of one stage. The role provides the behavior of an ant at each step. Actually roles are implemented by *MAQueen*, *MAFighter* or *MAWorker* that are subclass of *MARole*. In each different implementation there is one method: *doSimulationStepFor:* that manage the action of the ant and one method: *moveFrom:* that manage the position of the ant at each step.
 
+***MAWorker variables :***
+
+ -*phase*, is a symbol to represent the actual phase of the ant: *explore* of *return*.
+ 
+ -*oldPositions*, is and ordered collection of 5 points used by the worker role do not move on the last 5 position the worker already visit.
+ 
 ##### TMARolesServices
 
 This service is provided by the role implementation and used by the stage. It describes methods that the role needs to implement because the stage implementation needs it to work correctly.
+
+***Variables :***
+
+ -*roleName*, is a symbol used to know the role of an ant: *queen*, *fighter* or *worker*.
 
 ##### TMARolesEvents
 
@@ -141,3 +161,22 @@ Roles provide this event that is consumed by the simulation manager. This event 
 ## Ground
 
 The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the system's view. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
+
+
+***Variables :***
+
+ -*mySpace*, containing the *BlSpace* object.
+ 
+ -*refreshing*, is an integer used to know the actual refresh rate of the view.
+ 
+ -*stepView*, is a *BlTextElement* used to print the actual step on the view.
+ 
+ -*nbInsectsView*, is a *BlTextElement* used to print the actual number of insects on the view.
+ 
+ -*nbDeliveredView*, is a *BlTextElement* used to print the actual number of delivered on the view.
+ 
+  -*nbPheromonesView*, is a *BlTextElement* used to print the actual number of pheromones on the view.
+ 
+ -*nbEggsView*, is a *BlTextElement* used to print the actual number of eggs on the view.
+ 
+ -*nbAntView*, is a *BlTextElement* used to print the actual number of ants on the view.
