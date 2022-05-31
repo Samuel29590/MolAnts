@@ -64,6 +64,8 @@ This service also describe two methods that the simulation need to implement: *s
 
 ## Insects
 
+![MolAnts_schemas_insects](https://user-images.githubusercontent.com/64481702/171165760-29ceb48f-96c5-45a2-adcc-97ad8f5608b4.svg)
+
 The actual implementation of the *TMAInsectsType*: *MAInsect*, describe one insect. It means that if there are 50 insects on the simulation, there are also 50 instances of *MAInsects*. This implementation is very simple, insect only move on the ground randomly (waiting to be eaten...) at each step of the simulation.
 
 ***Variables :***
@@ -77,6 +79,8 @@ The actual implementation of the *TMAInsectsType*: *MAInsect*, describe one inse
 Insects provide this event that is consumed by the simulation manager. This event describe one method *positionChnagedFor:oldPos:newPos:* that aim to be implemented by the simulation manager to keep the dictionary of insect positions up-to-date.
 
 ## Pheromones
+
+![MolAnts_schemas_pheromone](https://user-images.githubusercontent.com/64481702/171165778-3d8cc310-27d3-4d51-befe-d6d0973c37cd.svg)
 
 The actual implementation of the *TMAPheromonesType*: *MAPheromones*, manage all the pheromones of the simulation. Pheromones are stored in two dictionaries, one for exploration's pheromones and one for returning's pheromones. Dictionaries has for key: the position and for value: an association: (an Ant -> an Integer). In this association the ant represent the last ant that visits the pheromone and the integer represent the intensity of the pheromone.
 
@@ -96,6 +100,8 @@ This service is provided by the pheromone implementation and used by the ground 
 
 ## Ants
 
+![MolAnts_schemas_ants](https://user-images.githubusercontent.com/64481702/171165803-03d5a651-cabe-45b6-bae3-7beb68aba189.svg)
+
 The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created there is also one *MAStage* component and one *MARole* component created. There are associate through their component name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant *MAAnt* permit to increase the age of the ant and to send to the stage the order to do the simulation step and to move.
 
 ***Variables :***
@@ -113,6 +119,8 @@ This service is provided by the ant implementation isn't used by another compone
  -*stage*, containing the stage associate to the ant. It is used to access to the correct stage and do actions.
 
 ## Stages
+
+![MolAnts_schemas_stage](https://user-images.githubusercontent.com/64481702/171165851-7628da8d-b27b-48c8-94f6-c1789841fe73.svg)
 
 The actual implementation of the *TMAStageType*: *MAStage*, describe the stage of one ant. The stage manages the life cycle of an ant, it determines when an ant is an egg, an adult or when the ant is dead. It also sends to the role the order to do the simulation step and to move.
 
@@ -138,6 +146,9 @@ Stages provide this event that is consumed by the simulation manager. This event
 
 ## Roles
 
+![MolAnts_schemas_role](https://user-images.githubusercontent.com/64481702/171165874-55acfc66-a143-4fe8-bb19-1f1e55d1edfe.svg)
+
+
 The actual implementation of the *TMARoleeType*: *MARole*, describe the role of one stage. The role provides the behavior of an ant at each step. Actually roles are implemented by *MAQueen*, *MAFighter* or *MAWorker* that are subclass of *MARole*. In each different implementation there is one method: *doSimulationStepFor:* that manage the action of the ant and one method: *moveFrom:* that manage the position of the ant at each step.
 
 ***MAWorker variables :***
@@ -159,6 +170,8 @@ This service is provided by the role implementation and used by the stage. It de
 Roles provide this event that is consumed by the simulation manager. This event describes methods that aim to make the actions of the ants concrete in the system.
 
 ## Ground
+
+![MolAnts_schemas_ground](https://user-images.githubusercontent.com/64481702/171165915-47490181-b584-44b7-935a-cc3233c8c192.svg)
 
 The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the system's view. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
 
