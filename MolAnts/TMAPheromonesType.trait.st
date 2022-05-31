@@ -1,3 +1,6 @@
+"
+I'm the pheromone type trait.
+"
 Trait {
 	#name : #TMAPheromonesType,
 	#traits : 'MolComponentType',

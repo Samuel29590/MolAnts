@@ -1,3 +1,6 @@
+"
+I'm the insect type trait.
+"
 Trait {
 	#name : #TMAInsectsType,
 	#traits : 'MolComponentType',

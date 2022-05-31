@@ -1,3 +1,6 @@
+"
+I'm the stage type trait.
+"
 Trait {
 	#name : #TMAStageType,
 	#traits : 'MolComponentType',
