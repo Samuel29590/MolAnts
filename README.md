@@ -20,6 +20,8 @@ MolAnts require ![Molecule](https://github.com/OpenSmock/Molecule) for the compo
 
 ![MolAnts_schema](https://user-images.githubusercontent.com/64481702/171141050-28e85fe0-fc5e-4e0f-8a02-6859b4dcfdf9.svg)
 
+<br><br><br><br>
+
 ## Simulation
 
 The actual implementation of the *TMASimulationManagerType*: *MASimulationManager*, describe the manager of the MolAnts's system. It aims to put in relation every entity of the system. The simulation manager reference all the entities of the system in ordered collections or dictionaries and can access to all the entities and send them events. This feature permits to do concrete actions as interaction between ants and insects or ants and pheromones.
@@ -61,6 +63,8 @@ This service also describe two methods that the simulation need to implement: *s
 ***Variables :***
  
  -*isRunning*, is a Boolean that is set to true when the simulation is playing and set to false when it is paused or stopped.
+ 
+<br><br><br><br>
 
 ## Insects
 
@@ -77,6 +81,8 @@ The actual implementation of the *TMAInsectsType*: *MAInsect*, describe one inse
 ##### TMAInsectEvents
 
 Insects provide this event that is consumed by the simulation manager. This event describe one method *positionChnagedFor:oldPos:newPos:* that aim to be implemented by the simulation manager to keep the dictionary of insect positions up-to-date.
+
+<br><br><br><br>
 
 ## Pheromones
 
@@ -98,6 +104,8 @@ Pheromones are created by ants when they are moving on the ground and if an ant 
 
 This service is provided by the pheromone implementation and used by the ground and the simulation manager. It provides two methods to retrieve the pheromones dictionaries. This aim to draw pheromones on the canvas and to detect if an ant is around pheromones.
 
+<br><br><br><br>
+
 ## Ants
 
 ![MolAnts_schemas_ants](https://user-images.githubusercontent.com/64481702/171165803-03d5a651-cabe-45b6-bae3-7beb68aba189.svg)
@@ -117,6 +125,8 @@ This service is provided by the ant implementation isn't used by another compone
 ***Variables :***
 
  -*stage*, containing the stage associate to the ant. It is used to access to the correct stage and do actions.
+
+<br><br><br><br>
 
 ## Stages
 
@@ -144,6 +154,8 @@ This service is provided by the stage implementation and used by the ant impleme
 
 Stages provide this event that is consumed by the simulation manager. This event describe one method *stageChanged:for:* that aim to be implemented by the simulation manager to remove, from the ordered collection *ants*, ants that are dead.
 
+<br><br><br><br>
+
 ## Roles
 
 ![MolAnts_schemas_role](https://user-images.githubusercontent.com/64481702/171165874-55acfc66-a143-4fe8-bb19-1f1e55d1edfe.svg)
@@ -168,6 +180,8 @@ This service is provided by the role implementation and used by the stage. It de
 ##### TMARolesEvents
 
 Roles provide this event that is consumed by the simulation manager. This event describes methods that aim to make the actions of the ants concrete in the system.
+
+<br><br><br><br>
 
 ## Ground
 
@@ -194,7 +208,8 @@ The actual implementation of the *TMAGroundType*: *MAGround* is the implementati
  
  -*nbAntView*, is a *BlTextElement* used to print the actual number of ants on the view.
  
- ## Illustrations
+<br><br><br><br>
 
+ ## Illustrations
 
 <img src="https://user-images.githubusercontent.com/64481702/171133973-ca32c9af-044f-457e-9749-9d09798bad47.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171133976-aaa2327b-5afb-4a46-a0e6-f751bda2294e.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171133979-9786eaf6-205c-49a8-991c-bea4fbbac153.png" width="300">
