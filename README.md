@@ -18,7 +18,7 @@ MolAnts require ![Molecule](https://github.com/OpenSmock/Molecule) for the compo
   
 ## Overview of the Components, Types, Services and Events organisation with Molecule
 
-![MolAnts_schema](https://user-images.githubusercontent.com/64481702/170274425-ee86664e-7058-4b37-931c-5653caa19a8d.svg)
+![MolAnts_schema](https://user-images.githubusercontent.com/64481702/171141050-28e85fe0-fc5e-4e0f-8a02-6859b4dcfdf9.svg)
 
 ## Simulation
 
