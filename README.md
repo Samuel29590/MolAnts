@@ -184,10 +184,4 @@ The actual implementation of the *TMAGroundType*: *MAGround* is the implementati
  ## Illustrations
 
 
-<img src="https://user-images.githubusercontent.com/64481702/171133973-ca32c9af-044f-457e-9749-9d09798bad47.png" width="100" height="100">
-
-![Illustration2](https://user-images.githubusercontent.com/64481702/171133976-aaa2327b-5afb-4a46-a0e6-f751bda2294e.png)
-![Illustration3](https://user-images.githubusercontent.com/64481702/171133979-9786eaf6-205c-49a8-991c-bea4fbbac153.png)
-
-
- 
+<img src="https://user-images.githubusercontent.com/64481702/171133973-ca32c9af-044f-457e-9749-9d09798bad47.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171133976-aaa2327b-5afb-4a46-a0e6-f751bda2294e.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171133979-9786eaf6-205c-49a8-991c-bea4fbbac153.png" width="300">
