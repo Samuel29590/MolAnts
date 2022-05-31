@@ -180,3 +180,12 @@ The actual implementation of the *TMAGroundType*: *MAGround* is the implementati
  -*nbEggsView*, is a *BlTextElement* used to print the actual number of eggs on the view.
  
  -*nbAntView*, is a *BlTextElement* used to print the actual number of ants on the view.
+ 
+ ## Illustrations
+ 
+![Illustration1](https://user-images.githubusercontent.com/64481702/171133973-ca32c9af-044f-457e-9749-9d09798bad47.png)
+![Illustration2](https://user-images.githubusercontent.com/64481702/171133976-aaa2327b-5afb-4a46-a0e6-f751bda2294e.png)
+![Illustration3](https://user-images.githubusercontent.com/64481702/171133979-9786eaf6-205c-49a8-991c-bea4fbbac153.png)
+
+
+ 
