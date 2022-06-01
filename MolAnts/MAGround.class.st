@@ -32,7 +32,8 @@ Class {
 		'nbDeliveredView',
 		'nbPheromonesView',
 		'nbEggsView',
-		'nbAntsView'
+		'nbAntsView',
+		'nbFeedingPointView'
 	],
 	#category : #MolAnts
 }
@@ -220,9 +221,9 @@ MAGround >> createInfoPanel [
 			  relocate: MASimulationManager simulationWidth / 10 @ 80;
 			  background: Color transparent) text: 'Step :' asRopedText).
 	stepView := BlTextElement new
-		        relocate: MASimulationManager simulationWidth / 10 @ 100;
-		        background: Color transparent;
-		        text: '000' asRopedText.
+		            relocate: MASimulationManager simulationWidth / 10 @ 100;
+		            background: Color transparent;
+		            text: '000' asRopedText.
 	infoPanel addChild: stepView.
 
 	"Ajout du nombre de proies à l'interface."
@@ -231,10 +232,10 @@ MAGround >> createInfoPanel [
 			  background: Color transparent) text:
 			 'Number of insects :' asRopedText).
 	nbInsectsView := BlTextElement new
-		             relocate:
-			             MASimulationManager simulationWidth / 10 @ 150;
-		             background: Color transparent;
-		             text: '000' asRopedText.
+		                 relocate:
+			                 MASimulationManager simulationWidth / 10 @ 150;
+		                 background: Color transparent;
+		                 text: '000' asRopedText.
 	infoPanel addChild: nbInsectsView.
 
 	"Ajout du nombre de proies ramenées à l'interface."
@@ -243,23 +244,39 @@ MAGround >> createInfoPanel [
 			  background: Color transparent) text:
 			 'Number of insects delivered :' asRopedText).
 	nbDeliveredView := BlTextElement new
-		               relocate:
-			               MASimulationManager simulationWidth / 10 @ 200;
-		               background: Color transparent;
-		               text: '000' asRopedText.
+		                   relocate:
+			                   MASimulationManager simulationWidth / 10 @ 200;
+		                   background: Color transparent;
+		                   text: '000' asRopedText.
 	infoPanel addChild: nbDeliveredView.
 
 	"Ajout du nombre de pheromones à l'interface."
 	infoPanel addChild: ((BlTextElement new
 			  relocate: MASimulationManager simulationWidth / 10 * 5 @ 130;
 			  background: Color transparent) text:
-			 'Nunber of pheromones :' asRopedText).
+			 'Number of pheromones :' asRopedText).
 	nbPheromonesView := BlTextElement new
-		                relocate:
-			                MASimulationManager simulationWidth / 10 * 5 @ 150;
-		                background: Color transparent;
-		                text: '000' asRopedText.
+		                    relocate:
+			                    MASimulationManager simulationWidth / 10 * 5
+			                    @ 150;
+		                    background: Color transparent;
+		                    text: '000' asRopedText.
 	infoPanel addChild: nbPheromonesView.
+
+
+	"Ajout du nombre de feedingPoints à l'interface."
+	infoPanel addChild: ((BlTextElement new
+			  relocate: MASimulationManager simulationWidth / 10 * 5 @ 180;
+			  background: Color transparent) text:
+			 'Number of feeding points :' asRopedText).
+	nbFeedingPointView := BlTextElement new
+		                      relocate:
+			                      MASimulationManager simulationWidth / 10 * 5
+			                      @ 200;
+		                      background: Color transparent;
+		                      text: '000' asRopedText.
+	infoPanel addChild: nbFeedingPointView.
+
 
 	"Ajout du nombre de fourmis à l'interface."
 	infoPanel addChild: ((BlTextElement new
@@ -271,10 +288,11 @@ MAGround >> createInfoPanel [
 			  relocate: MASimulationManager simulationWidth / 10 * 5 @ 100;
 			  background: Color transparent) text: 'Eggs : ' asRopedText).
 	nbEggsView := BlTextElement new
-		          relocate:
-			          MASimulationManager simulationWidth / 10 * 5 + 55 @ 100;
-		          background: Color transparent;
-		          text: '000' asRopedText.
+		              relocate:
+			              MASimulationManager simulationWidth / 10 * 5 + 55
+			              @ 100;
+		              background: Color transparent;
+		              text: '000' asRopedText.
 	infoPanel addChild: nbEggsView.
 
 	infoPanel addChild: ((BlTextElement new
@@ -282,10 +300,11 @@ MAGround >> createInfoPanel [
 				  MASimulationManager simulationWidth / 10 * 5 + 100 @ 100;
 			  background: Color transparent) text: 'Adults : ' asRopedText).
 	nbAntsView := BlTextElement new
-		          relocate:
-			          MASimulationManager simulationWidth / 10 * 5 + 165 @ 100;
-		          background: Color transparent;
-		          text: '000' asRopedText.
+		              relocate:
+			              MASimulationManager simulationWidth / 10 * 5 + 165
+			              @ 100;
+		              background: Color transparent;
+		              text: '000' asRopedText.
 	infoPanel addChild: nbAntsView
 ]
 
@@ -341,6 +360,15 @@ MAGround >> drawOnSpartaCanvas: aCanvas [
 				background: Color black;
 				backgroundAlpha: 1;
 				draw ] ].
+		
+		
+	self getFeedingPoints ifNotNil: [ 
+		self getFeedingPoints keysAndValuesDo: [ :k :v | 
+			aCanvas figure
+				path: (aCanvas shape circleAt: k radius: 10);
+				background: Color purple;
+				backgroundAlpha: 1;
+				draw ] ].
 
 	self getAnts ifNotNil: [ 
 		self getAnts do: [ :ant | 
@@ -377,6 +405,14 @@ MAGround >> getAnts [
 
 	"Get all the MAAnt instances, in order to draw them on the canvas."
 	^ self getTMASimulationServicesProvider getAnts
+]
+
+{ #category : #services }
+MAGround >> getFeedingPoints [
+
+	"Get all the MAFeedingPoint instances, in order to draw them on the canvas."
+
+	^ self getTMASimulationServicesProvider getFeedingPointsPos
 ]
 
 { #category : #services }
@@ -453,13 +489,18 @@ MAGround >> updateInfoPanel [
 	"Modify each elements of the info panel. It permit to keep the view up to date with the simulation."
 
 	| eggs |
-	stepView text: (self getTMASimulationServicesProvider getStep) asRopedText.
+	stepView text:
+		self getTMASimulationServicesProvider getStep asRopedText.
 	nbInsectsView text: self getInsects size asRopedText.
 	nbDeliveredView text:
 		self getTMASimulationServicesProvider getNbDelivered asRopedText.
 	nbPheromonesView text:
 		(self getTMAPheromoneServicesProvider getPheromonesDict size
 		 + self getTMAPheromoneServicesProvider getPheromonesReturnDict size)
+			asRopedText.
+
+	nbFeedingPointView text:
+		self getFeedingPoints size
 			asRopedText.
 
 	eggs := 0.

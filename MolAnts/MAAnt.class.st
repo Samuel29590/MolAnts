@@ -76,6 +76,12 @@ MAAnt >> doSimulationStep [
 ]
 
 { #category : #services }
+MAAnt >> getFeedingPoints [
+
+	^ self getTMASimulationServicesProvider getFeedingPointsPos
+]
+
+{ #category : #services }
 MAAnt >> getInsects [
 
 	^ self getTMASimulationServicesProvider getInsectsPos. 
@@ -85,6 +91,12 @@ MAAnt >> getInsects [
 MAAnt >> getPheromonesDict [
 
 	^ self getTMASimulationServicesProvider getPheromonesDict.
+]
+
+{ #category : #services }
+MAAnt >> getPheromonesReturnDict [ 
+
+	^ self getTMASimulationServicesProvider getPheromonesReturnDict
 ]
 
 { #category : #services }

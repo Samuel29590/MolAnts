@@ -24,6 +24,12 @@ TMASimulationServices >> getAnts [
 ]
 
 { #category : #services }
+TMASimulationServices >> getFeedingPointsPos [
+
+	
+]
+
+{ #category : #services }
 TMASimulationServices >> getInsectsPos [
 
 	

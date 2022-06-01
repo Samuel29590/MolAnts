@@ -9,6 +9,12 @@ Trait {
 }
 
 { #category : #events }
+TMARoleEvents >> ant: anAnt killAt: aPoint [
+
+	
+]
+
+{ #category : #events }
 TMARoleEvents >> insectDelivered [
 ]
 

@@ -19,7 +19,16 @@ MAFighter >> doSimulationStepFor: anAnt [
 
 	"For the moment fighter don't do nothing."
 
-	
+	| antRectangle |
+	antRectangle := BlBounds
+		                origin: anAnt position - (6 @ 6)
+		                extent: 12 @ 12.
+
+	anAnt getInsects keysDo: [ :each | 
+		| insectRectangle |
+		insectRectangle := BlBounds origin: each extent: 0 @ 0.
+		(antRectangle intersects: insectRectangle) ifTrue: [ 
+			self getTMARoleEventsNotifier ant: anAnt killAt: each ] ]
 ]
 
 { #category : #role }

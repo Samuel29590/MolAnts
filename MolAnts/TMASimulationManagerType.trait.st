@@ -35,5 +35,5 @@ TMASimulationManagerType classSide >> providedComponentServices [
 TMASimulationManagerType classSide >> usedComponentServices [
 
 	<componentContract>
-	^ { TMAPheromoneServices }
+	^ { TMAPheromoneServices . TMAFeedingPointServices }
 ]

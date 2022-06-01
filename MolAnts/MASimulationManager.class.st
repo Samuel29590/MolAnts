@@ -35,7 +35,8 @@ Class {
 		'ants',
 		'nbAnts',
 		'insectsPos',
-		'nbDelivered'
+		'nbDelivered',
+		'feedingPointsPos'
 	],
 	#category : #MolAnts
 }
@@ -103,6 +104,20 @@ MASimulationManager class >> stopSimulation [
 	
 ]
 
+{ #category : #events }
+MASimulationManager >> ant: anAnt killAt: aPoint [
+
+	| insect |
+	"Removing the insect in the dictionary."
+	(insectsPos includesKey: aPoint) ifTrue: [ 
+		insect := (insectsPos at: aPoint) removeFirst.
+		(insectsPos at: aPoint) isEmpty ifTrue: [ 
+			insectsPos removeKey: aPoint ] ].
+
+	"Stoping the insect's component instance."
+	MAInsect stop: insect componentName
+]
+
 { #category : #'component life cycle' }
 MASimulationManager >> componentActivate [
 
@@ -129,6 +144,7 @@ MASimulationManager >> componentInitialize [
 	nbAnts := 0.
 	nbDelivered := 0.
 	insectsPos := Dictionary new.
+	feedingPointsPos := Dictionary new.
 	pheromones := MAPheromones start: 'Pheromones'.
 	self
 		forServices: TMAPheromoneServices
@@ -191,6 +207,27 @@ MASimulationManager >> createAntHill [
 ]
 
 { #category : #private }
+MASimulationManager >> createFeedingPoints [
+
+	"Creation of the 5 first feeding points"
+
+	1 to: 5 do: [ :e | 
+		| feed name newPos |
+		name := ('Feed' , e printString) asSymbol.
+		feed := MAFeedingPoint start: name.
+		newPos := feed position.
+
+		"Add the insect to the dictionary of insects positions."
+		(feedingPointsPos includesKey: newPos)
+			ifFalse: [ 
+				| collection |
+				collection := OrderedCollection new.
+				collection add: feed.
+				feedingPointsPos add: newPos -> collection ]
+			ifTrue: [ (feedingPointsPos at: newPos) addLast: feed ] ]
+]
+
+{ #category : #private }
 MASimulationManager >> createInsects [
 
 	"Creation of the 50 firt insects"
@@ -225,6 +262,14 @@ MASimulationManager >> getAnts [
 	"Returning an OrderedCollection of all the ant currently alive in the system."
 
 	^ ants
+]
+
+{ #category : #services }
+MASimulationManager >> getFeedingPointsPos [
+
+	"Returning a Dictionary of the feeding point positions (key: a Point / value: an OrderedCollection of MAFeedingPoint instances"
+
+	^ feedingPointsPos
 ]
 
 { #category : #services }
@@ -265,6 +310,18 @@ MASimulationManager >> getStep [
 	"Returning the current step."
 
 	^ step
+]
+
+{ #category : #'component accessing' }
+MASimulationManager >> getTMAFeedingPointServicesProvider [
+	| servicesSymbol servicesProvider itf |
+	itf := TMAFeedingPointServices.
+	servicesSymbol := self servicesProviders at: itf ifAbsent: [^MolNotFoundServicesProvider new interface: itf name: nil].
+	servicesSymbol isSymbol
+	 	ifTrue: 
+			[servicesProvider := MolComponentManager default locatorServices 
+						searchServicesProviderFor: TMAFeedingPointServices named: servicesSymbol]. 
+	^servicesProvider
 ]
 
 { #category : #'component accessing' }
@@ -382,6 +439,19 @@ MASimulationManager >> removeAntHill [
 ]
 
 { #category : #private }
+MASimulationManager >> removeFeedingPoints [
+
+	"Delete feeding points"
+
+	feedingPointsPos do: [ :each | 
+		| name |
+		each do: [ :feedingPoint | "Delete a feeding point"
+			name := feedingPoint componentName.
+			MAFeedingPoint stop: name ] ].
+	feedingPointsPos := nil
+]
+
+{ #category : #private }
 MASimulationManager >> removeInsects [
 
 	"Delete insects"
@@ -416,6 +486,7 @@ MASimulationManager >> start [
 	self isRunning ifTrue: [ ^ self ].
 	self isAntHillCreated ifFalse: [ self createAntHill ].
 	self createInsects.
+	self createFeedingPoints.
 	self startSimulationLoop.
 	isRunning := true.
 	self getTMASimulationToGlobalEventsNotifier started
@@ -446,6 +517,7 @@ MASimulationManager >> stop [
 	MAGround stop: 'Ground'.
 	self isAntHillCreated ifTrue: [ self removeAntHill ].
 	self removeInsects.
+	self removeFeedingPoints.
 	self removePheromones.
 	isRunning := false.
 	self getTMASimulationToGlobalEventsNotifier stopped
@@ -462,15 +534,15 @@ MASimulationManager >> stopSimulationLoop [
 { #category : #events }
 MASimulationManager >> worker: anAnt eatAt: aPoint [
 
-	| insect |
-	"Removing the insect in the dictionary."
-	(insectsPos includesKey: aPoint) ifTrue: [ 
-		insect := (insectsPos at: aPoint) removeFirst.
-		(insectsPos at: aPoint) isEmpty ifTrue: [ 
-			insectsPos removeKey: aPoint ] ].
+	"Deacreasing the capacity of the feedingPoint."
 
-	"Stoping the insect's component instance."
-	MAInsect stop: insect componentName
+	(feedingPointsPos includesKey: aPoint) ifTrue: [ 
+		(feedingPointsPos at: aPoint)first eated = 0 ifTrue: [ 
+			| feedingPoint |
+			feedingPoint := (feedingPointsPos at: aPoint) removeFirst.
+			(feedingPointsPos at: aPoint) isEmpty ifTrue: [ 
+				feedingPointsPos removeKey: aPoint ].
+			MAFeedingPoint stop: feedingPoint componentName ] ]
 ]
 
 { #category : #events }
