@@ -1,27 +1,29 @@
 "
-The actual implementation of the TMASimulationManagerType: MASimulationManager, describe the manager of the MolAnts's system. It aims to put in relation every entity of the system. The simulation manager reference all the entities of the system in ordered collections or dictionaries and can access to all the entities and send them events. This feature permits to do concrete actions as interaction between ants and insects or ants and pheromones.
+The actual implementation of the *TMASimulationManagerType*: *MASimulationManager*, describe the manager of the MolAnts's system. It aims to put in relation every entity of the system. The simulation manager reference all the entities of the system in ordered collections or dictionaries and can access to all the entities and send them events. This feature permits to do concrete actions as interaction between ants and insects or ants and pheromones.
 
-Futhermore, the simulation manager contains the main loop of the system. This loop send the simulationStepSend event message to each entity at each turn.
+Futhermore, the simulation manager contains the main loop of the system. This loop send the *simulationStepSend* event message to each entity at each turn.
 
 The simulation manager also implement methods to manage ants and insects (create, update and remove).
 
-Finally this implementation provides start / pause / play / stop methods on the class side. Also on the side class the simulation manager provides the simulation data as step duration, width and height of the ground, and ant hill position.
+Finally this implementation provides *start / pause / play / stop* methods on the class side. Also on the side class the simulation manager provides the simulation data as step duration, width and height of the ground, and ant hill position.
 
-Variables :
-
--simulationThread, containing the thread that sends at every step the event: * simulationStepSend*.
-
--step, is an integer that count the number of step.
-
--isAntHillCreated, is a Boolean that is put to true at the creation of the first ant and put to false when ants are removed.
-
--ants, is an ordered collection of ants. It contains all ants of the system. It is used to draw them on the ground and update the info panel.
-
--nbAnt, is an integer incremented at each ant creation. It is used to set the name of each ant component instance.
-
--insectsPos, is a dictionary containing all the insects of the simulation and their position. Key: a point. Value: an ordered collection of insects.
-
--nbDelivered, is an integer that count the number of insect delivered to the anthill.
+***Variables :***
+ 
+ -*simulationThread*, containing the thread that sends at every step the event: * simulationStepSend*.
+ 
+ -*step*, is an integer that count the number of step.
+ 
+ -*isAntHillCreated*, is a Boolean that is put to true at the creation of the first ant and put to false when ants are removed.
+ 
+ -*ants*, is an ordered collection of ants. It contains all ants of the system. It is used to draw them on the ground and update the info panel.
+ 
+ -*nbAnt*, is an integer incremented at each ant creation. It is used to set the name of each ant component instance.
+ 
+ -*insectsPos*, is a dictionary containing all the insects of the simulation and their position. Key: a point. Value: an ordered collection of insects.
+ 
+ -*nbDelivered*, is an integer that count the number of insect delivered to the anthill.
+ 
+ -*feedingPointsPos*, is a dictionary containing all the feeding points of the simulation and their position. Key: a point. Value: an ordered collection of feeding points.
 "
 Class {
 	#name : #MASimulationManager,

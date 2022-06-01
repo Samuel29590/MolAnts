@@ -1,3 +1,6 @@
+"
+I'm the feeding points type trait.
+"
 Trait {
 	#name : #TMAFeedingPointType,
 	#traits : 'MolComponentType',
