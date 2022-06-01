@@ -18,7 +18,7 @@ MolAnts require ![Molecule](https://github.com/OpenSmock/Molecule) for the compo
   
 ## Overview of the Components, Types, Services and Events organisation with Molecule
 
-![MolAnts_schema](https://user-images.githubusercontent.com/64481702/171141050-28e85fe0-fc5e-4e0f-8a02-6859b4dcfdf9.svg)
+![MolAnts_schema](https://user-images.githubusercontent.com/64481702/171402823-bd2f56b7-c43c-42ca-8568-42426c1a7f29.svg)
 
 <br><br><br><br>
 
@@ -47,6 +47,8 @@ Finally this implementation provides *start / pause / play / stop* methods on th
  -*insectsPos*, is a dictionary containing all the insects of the simulation and their position. Key: a point. Value: an ordered collection of insects.
  
  -*nbDelivered*, is an integer that count the number of insect delivered to the anthill.
+ 
+ -*feedingPointsPos*, is a dictionary containing all the feeding points of the simulation and their position. Key: a point. Value: an ordered collection of feeding points.
 
 ##### TMASimulationToGlobalEvents
 
@@ -84,6 +86,24 @@ Insects provide this event that is consumed by the simulation manager. This even
 
 <br><br><br><br>
 
+## Feeding Points
+
+![MolAnts_schemas_feedingpoints](https://user-images.githubusercontent.com/64481702/171404721-dc6506cd-e2c5-4aab-83d2-cbfec7dcd301.svg)
+
+The actual implementation of the *TMAFeedingPointType*: *MAFeedingPoint*, describe one feeding point. This implementation is very simple, feeding point only receive eated message. This message decrease their capacity and when their capacity is equal to 0 the feeding point disappear from the ground.
+
+***Variables :***
+
+ -*position*, is a point.
+ 
+ -*capacity*, is an integer.
+ 
+##### TMAFeedingPointServices
+
+Feeding points provide this event that is consumed by the simulation manager. This event describe one methods that aim to be implemented by feeding points.
+
+<br><br><br><br>
+
 ## Pheromones
 
 ![MolAnts_schemas_pheromone](https://user-images.githubusercontent.com/64481702/171165778-3d8cc310-27d3-4d51-befe-d6d0973c37cd.svg)
@@ -108,7 +128,7 @@ This service is provided by the pheromone implementation and used by the ground 
 
 ## Ants
 
-![MolAnts_schemas_ants](https://user-images.githubusercontent.com/64481702/171165803-03d5a651-cabe-45b6-bae3-7beb68aba189.svg)
+![MolAnts_schemas_ants](https://user-images.githubusercontent.com/64481702/171402674-17d18dc3-9129-4e29-b733-0d062aa8ba65.svg)
 
 The actual implementation of the *TMAAntsType*: *MAAnt*, describe one ant. For each ant created there is also one *MAStage* component and one *MARole* component created. There are associate through their component name (example: ***Ant29***, ***StageAnt29*** and ***RoleStageAnt29***). The stage of the ant is created by the ant and the role is created by the stage. The implementation of the ant *MAAnt* permit to increase the age of the ant and to send to the stage the order to do the simulation step and to move.
 
@@ -158,8 +178,7 @@ Stages provide this event that is consumed by the simulation manager. This event
 
 ## Roles
 
-![MolAnts_schemas_role](https://user-images.githubusercontent.com/64481702/171165874-55acfc66-a143-4fe8-bb19-1f1e55d1edfe.svg)
-
+![MolAnts_schemas_role](https://user-images.githubusercontent.com/64481702/171402730-15749d16-d99e-4af8-a9be-c2f97e936e1a.svg)
 
 The actual implementation of the *TMARoleeType*: *MARole*, describe the role of one stage. The role provides the behavior of an ant at each step. Actually roles are implemented by *MAQueen*, *MAFighter* or *MAWorker* that are subclass of *MARole*. In each different implementation there is one method: *doSimulationStepFor:* that manage the action of the ant and one method: *moveFrom:* that manage the position of the ant at each step.
 
@@ -185,7 +204,7 @@ Roles provide this event that is consumed by the simulation manager. This event 
 
 ## Ground
 
-![MolAnts_schemas_ground](https://user-images.githubusercontent.com/64481702/171165915-47490181-b584-44b7-935a-cc3233c8c192.svg)
+![MolAnts_schemas_ground](https://user-images.githubusercontent.com/64481702/171402759-0598396b-93bf-4a71-aaa4-8a25b5c334e9.svg)
 
 The actual implementation of the *TMAGroundType*: *MAGround* is the implementation of the system's view. It permits to draw all the entities of the system on a canvas and to keep the information panel up-to-date. It also permits to have a functional interface with buttons to start, pause and stop the system and also buttons to change the refresh rate.
 
@@ -208,9 +227,10 @@ The actual implementation of the *TMAGroundType*: *MAGround* is the implementati
  
  -*nbAntView*, is a *BlTextElement* used to print the actual number of ants on the view.
  
+ -*nbFeedingPointView*, is a *BlTextElement* used to print the actual number of feedingPoints on the view.
+ 
 <br><br><br><br>
 
  ## Illustrations
 
-<img src="https://user-images.githubusercontent.com/64481702/171133973-ca32c9af-044f-457e-9749-9d09798bad47.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171192655-5c66362e-5dab-4493-84a2-bce223e094c9.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171192948-e0688557-49e8-4210-936f-0ae5d26335b6.png" width="300">
-
+<img src="https://user-images.githubusercontent.com/64481702/171404050-3f5bdc04-1a23-484e-9b88-97dc3ab62869.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171404064-3a764a86-27e7-4895-82c7-bd938bfa1d87.png" width="300"><img src="https://user-images.githubusercontent.com/64481702/171404075-8ec91551-82d0-47c4-98cd-6d2ad86d810d.png" width="300">
