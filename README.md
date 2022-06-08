@@ -28,7 +28,7 @@ The actual implementation of the *TMASimulationManagerType*: *MASimulationManage
 
 Futhermore, the simulation manager contains the main loop of the system. This loop send the *simulationStepSend* event message to each entity at each turn.
 
-The simulation manager also implement methods to manage ants and insects (create, update and remove).
+The simulation manager also implements methods to manage ants and insects (create, update and remove).
 
 Finally this implementation provides *start / pause / play / stop* methods on the class side. Also on the side class the simulation manager provides the simulation data as step duration, width and height of the ground, and ant hill position.
 
